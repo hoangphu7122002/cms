@@ -15,3 +15,5 @@
 
 # Ignore MDX files
 *.mdx
+# synced from project repos by scripts/sync.mjs; edit the source post instead
+src/content/posts/*/
