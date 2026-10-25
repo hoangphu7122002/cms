@@ -22,7 +22,7 @@ On one L40S, TensorRT-LLM (TRT-LLM, NVIDIA's serving engine) met our standard la
 
 At 1,350 and 1,518 users the engine produced 257 output tokens per second from a KV pool of 477,952 tokens, at 48 % GPU use. A half-idle GPU pointed at a setting.
 
-Standard tier: time to first token (TTFT) at most 1 s for chat, 2 s for rag and code; time per output token (TPOT) at most 50 ms. A load level passes when 0.90 of requests meet both.
+Standard tier: time to first token (TTFT) at most 1 s for chat, 2 s for rag (retrieval-augmented) and code; time per output token (TPOT) at most 50 ms. A load level passes when 0.90 of requests meet both.
 
 ## 2. The token budget
 
@@ -35,7 +35,7 @@ vllm serve <model> --max-num-batched-tokens 256
 python -m sglang.launch_server --model-path <model> --chunked-prefill-size 256
 ```
 
-Assume 56 requests are decoding when a 6,000-token prompt arrives. At budget 256 the prompt gets 200 tokens per step and waits 30 steps for its first token; at 2,048 it waits 4. At about 30 ms per step, as we measured for TRT-LLM on the L40S, that is 900 ms of prefill before any queueing (computed). A 2,048-token step costs more, by an amount we did not measure.
+Assume 56 requests are decoding when a 6,000-token prompt arrives. At budget 256 the prompt gets 200 tokens per step and waits 30 steps for its first token; at 2,048 it waits 4. At about 30 ms per step (TRT-LLM's median TPOT on the L40S, 29.6 ms; steps not profiled), that is 900 ms of prefill before any queueing (computed). A 2,048-token step costs more, by an amount we did not measure.
 
 ![Bar charts: with 56 decode tokens, a step holds 200 prompt tokens at budget 256 and 1,992 at 2,048, so a 6,000-token prompt waits 30 steps against 4.](./figures/02_budget_step.png)
 
@@ -55,11 +55,11 @@ Single runs move by 0.02 to 0.05, so at 1,518 and 1,687 users TRT-LLM and vLLM t
 
 Why the same 256 hurt only TRT-LLM is our reading, not a profile: SGLang's median TPOT on the L40S, roughly one decode step, was 8.8 to 10.7 ms, against about 30 ms per TRT-LLM step.
 
-The new budget left TPOT unsolved. At light load standard was 0.79 and 0.96, with TPOT p90 at 66 ms against the 50 ms limit (median 29.6 ms). A single stream ran at 28.6 ms per token, slow for an L40S; per-step or CPU overhead is an untested hypothesis.
+The new budget left TPOT unsolved. At light load standard was 0.79 and 0.96, with TPOT p90 at 66 ms against the 50 ms limit. A single stream ran at 28.6 ms per token, slow for an L40S; per-step or CPU overhead is an untested hypothesis.
 
 ## 4. Lesson
 
-The same flag value in two engines is a different setting when they spend their steps differently. Before blaming kernels, split TTFT by prompt length at light load; if it climbs with length, as 0.14 s to 1.02 s did for us, tune the budget per engine.
+The same flag value in two engines is a different setting when they spend their steps differently. Before blaming kernels, split TTFT by prompt length at light load; if it climbs with length (0.14 s to 1.02 s for us), tune the budget per engine.
 
 ```python
 def ttft_by_length(records, edges=(500, 2000, 6000)):
@@ -73,26 +73,29 @@ def ttft_by_length(records, edges=(500, 2000, 6000)):
 
 ## 5. Limits
 
-Our L4 screen used the same budget of 256: TRT-LLM scored 0.667 at 260 users and 0.672 at 320, against 0.861 for vLLM at 320 (a 3-seed mean against one seed). We stopped TRT-LLM on the L4 and now read that verdict as doubtful; a rerun at 2,048 has not run.
+Our L4 screen used the same budget of 256: TRT-LLM scored 0.667 at 260 users and 0.672 at 320, against 0.861 for vLLM at 320 (a 3-seed mean against one seed). We stopped TRT-LLM on the L4 and now doubt that verdict; a rerun at 2,048 has not run.
 
-On the L4 one stream alone ran at 80.7 ms per token, against about 23 ms for vLLM. One request barely fills a 256 budget, so the budget does not explain it; it also clashes with 0.667 of requests passing the 50 ms TPOT limit. We do not know why.
+On the L4 one stream alone ran at 80.7 ms per token, against about 23 ms for vLLM. One request barely fills a 256 budget, so the budget does not explain it; it also clashes with at least 0.667 of requests passing the 50 ms TPOT limit. We do not know why.
 
-The L40S raw runs are outside our repository; we checked against the changelog entry and report chapter written from them. Every TRT-LLM number is one seed, host KV offload off. The L40S cost is an estimate: half of $7.95 measured for these runs plus another experiment.
+We checked the L40S numbers against summaries written at run time, not raw logs. Every TRT-LLM number is one seed, host KV offload off. The L40S cost is an estimate: about $3.5 of $7.95 measured for these runs and another experiment (our split).
 
 ## 6. Reproduce
 
-Model `qwen3-4b-fp8`, the engine command of Section 2 with `--max_num_tokens 256` or `2048`, and a closed-loop load generator that records every streamed token.
+Our runs, October 2026: TensorRT-LLM 1.3.0rc29, vLLM 0.30.0 and SGLang 0.5.20, Qwen3-4B-Instruct-2507 FP8 weights and FP8 KV cache.
 
-- L4 screen, budget 256: run `20261014-0200_session19b_trtllm-l4-screen`, about 0.5 GPU hours, about $1.5 (estimate).
-- L40S, sessions 30a and 30c (budget 256), 30d and 30e (budget 2,048): about 2.6 GPU hours, about $3.5 (estimate).
+1. Server: the TRT-LLM command of Section 2 with `--max_num_tokens 256` or `2048`, `--max_batch_size 256 --max_seq_len 32768`; chunked prefill, FP8 KV cache and block reuse in the options file. vLLM and SGLang as in Section 2, budget 256.
+2. Load: closed-loop users that stream every token and record the send time, the first token and the last token; standard tier as in Section 1; one seed per level.
+3. Check: TTFT by prompt length at light load with the function of Section 4; a single stream alone for the per-token floor.
+4. Cost: the L4 screen took about 0.5 GPU hours, about $1.5; the four L40S runs about 2.6 GPU hours, about $3.5 (estimates).
 
 ## 7. Sources
 
-- CHANGELOG Step 80 (L4 screen, stop decision) and Step 167 (L40S runs 30a, 30c, 30d, 30e).
-- Note 22, sections 1 and 6 to 8 (`max_num_tokens` semantics, gate, screen result); note 15 (vLLM L4 baseline).
-- Run `20261014-0200_session19b_trtllm-l4-screen`: `smoke.json` (TPOT 80.7 ms), `validate/engine_cmd.txt` (`--max_num_tokens 256`).
-- Report chapter 4 (SGLang TPOT on the L40S) and chapter 7 (TensorRT-LLM token budget).
-- Compute log rows for 19b and 30a to 30e; GPU optimization plan item 1.2 (L4 rerun, not run).
-- Figure data: CHANGELOG Step 167 (`02_attainment.py`); worked-example assumptions (`02_budget_step.py`).
+- TensorRT-LLM, tuning `max_batch_size` and `max_num_tokens`: https://nvidia.github.io/TensorRT-LLM/performance/performance-tuning-guide/tuning-max-batch-size-and-max-num-tokens.html; `trtllm-serve`: https://nvidia.github.io/TensorRT-LLM/latest/commands/trtllm-serve/trtllm-serve.html.
+- vLLM `serve` arguments (`--max-num-batched-tokens`): https://docs.vllm.ai/en/latest/cli/serve/.
+- SGLang server arguments (`--chunked-prefill-size`): https://docs.sglang.io/advanced_features/server_arguments.html.
+- Qwen3-4B-Instruct-2507 FP8 model card: https://huggingface.co/Qwen/Qwen3-4B-Instruct-2507-FP8.
+- Our runs, October 2026: per-request records, engine commands and a single-stream smoke test behind every measured number above.
+
+
 
 Written with Claude Code. Numbers checked against the runs under Sources.
