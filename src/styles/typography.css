@@ -161,6 +161,11 @@
     figcaption {
       font-family: var(--font-ui);
       @apply text-muted-foreground mt-3 text-center text-[0.875em] leading-normal text-balance;
+
+      /* a centred multi-line caption is hard to scan on a phone */
+      @media (width < 40rem) {
+        @apply text-start text-pretty;
+      }
     }
 
     /* tables: the rehype plugin wraps each one in .table-scroll */
@@ -316,9 +321,19 @@
     border-color: var(--rule);
   }
 
-  /* soften white figure backgrounds on the dark page */
+  /*
+   * Figures on the dark page. The charts are PNGs on white and use white,
+   * greys and a dark navy as data (free blocks, "other requests", peak
+   * use), so inverting them would swap meanings; they stay on a paper panel.
+   * brightness(0.9) takes the panel from #fff to #e6e6e6, about as bright
+   * as the body text (#e6e9ef), so it no longer outshines the words, and
+   * dims every colour by the same factor, so hues and their order survive.
+   * The padding is the same dimmed white, so labels near an edge do not
+   * touch the rounded corner.
+   */
   html[data-theme="dark"] .app-prose img {
-    filter: brightness(0.88);
+    filter: brightness(0.9);
+    padding: 0.375rem;
   }
 
   /* ===== Table of contents ===== */
@@ -335,6 +350,11 @@
 
     a {
       @apply hover:text-accent block py-1 text-sm leading-snug;
+
+      /* 44px tap rows on phones */
+      @media (width < 40rem) {
+        @apply py-3 leading-5;
+      }
     }
   }
 
@@ -344,7 +364,7 @@
     background-color: var(--surface);
 
     summary {
-      @apply cursor-pointer py-1 font-semibold;
+      @apply cursor-pointer py-1 font-semibold max-sm:py-2.5;
     }
 
     &[open] ol {

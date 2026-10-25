@@ -75,7 +75,7 @@ const shownTags = tags.slice(0, MAX_TAGS);
     <span>{minRead}</span>
     {
       shownTags.length > 0 && (
-        <ul class="relative z-10 flex flex-wrap gap-1.5 sm:ms-2">
+        <ul class="relative z-10 flex flex-wrap gap-x-1.5 max-sm:-my-2.5 sm:ms-2 sm:gap-y-1.5">
           {shownTags.map(tag => (
             <Tag
               tag={slugifyStr(tag)}

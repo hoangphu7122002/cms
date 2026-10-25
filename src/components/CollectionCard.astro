@@ -22,10 +22,10 @@ const shown = collection.posts.slice(0, MAX_SHOWN);
   </h3>
   <p class="font-ui text-muted-foreground text-sm">{countLabel}</p>
 
-  <ol class="font-ui mt-3 space-y-1.5 text-sm">
+  <ol class="font-ui mt-3 space-y-1.5 text-sm max-sm:mt-1 max-sm:space-y-0">
     {
       shown.map((post, i) => (
-        <li class="flex gap-2">
+        <li class="flex items-baseline gap-2">
           <span
             aria-hidden="true"
             class="text-muted-foreground w-6 flex-none text-end tabular-nums"
@@ -35,7 +35,7 @@ const shown = collection.posts.slice(0, MAX_SHOWN);
           <span class="sr-only">{tplStr(t.post.part, { n: i + 1 })}:</span>
           <a
             href={getPostUrl(post.id, post.filePath, Astro.currentLocale)}
-            class="text-foreground hover:text-accent decoration-accent underline underline-offset-4"
+            class="text-foreground hover:text-accent decoration-accent underline underline-offset-4 max-sm:inline-block max-sm:py-3"
           >
             {post.data.title}
           </a>

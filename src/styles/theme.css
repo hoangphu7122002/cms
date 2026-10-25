@@ -7,15 +7,6 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  /* post kinds: text colour + tinted badge background */
-  --color-kind-series: var(--kind-series);
-  --color-kind-series-bg: var(--kind-series-bg);
-  --color-kind-concept: var(--kind-concept);
-  --color-kind-concept-bg: var(--kind-concept-bg);
-  --color-kind-fieldnote: var(--kind-fieldnote);
-  --color-kind-fieldnote-bg: var(--kind-fieldnote-bg);
-  --color-kind-method: var(--kind-method);
-  --color-kind-method-bg: var(--kind-method-bg);
   /* system stacks only: no web font is shipped to readers */
   --font-ui: var(--stack-ui);
   --font-serif: var(--stack-serif);
@@ -36,8 +27,8 @@
 }
 
 /*
- * "Quiet paper" palette. Contrast (WCAG 2.x) checked for every text and
- * badge pair: text >= 4.5:1, UI strokes >= 3:1, in both themes.
+ * "Quiet paper" palette. Contrast (WCAG 2.x) checked for every text pair:
+ * text >= 4.5:1, UI strokes >= 3:1, in both themes.
  */
 
 /* Light theme values */
@@ -58,15 +49,6 @@
   --callout-key-border: #2463a6;
   --callout-limits-bg: #fbf3e2;
   --callout-limits-border: #9a5b00;
-  /* post kinds (badge text on its own tint and on the page) */
-  --kind-series: #0b5cad;
-  --kind-series-bg: #e3eaf0;
-  --kind-concept: #6440b8;
-  --kind-concept-bg: #ece7f1;
-  --kind-fieldnote: #1b6e45;
-  --kind-fieldnote-bg: #e5ece5;
-  --kind-method: #8a5200;
-  --kind-method-bg: #f0e9de;
 }
 
 /* Dark theme values */
@@ -85,12 +67,4 @@
   --callout-key-border: #6cb2ff;
   --callout-limits-bg: rgb(240 185 92 / 0.09);
   --callout-limits-border: #f0b95c;
-  --kind-series: #6cb2ff;
-  --kind-series-bg: #202e3e;
-  --kind-concept: #b79cff;
-  --kind-concept-bg: #2b2a3e;
-  --kind-fieldnote: #6fd3a0;
-  --kind-fieldnote-bg: #213231;
-  --kind-method: #f0b95c;
-  --kind-method-bg: #332f28;
 }
