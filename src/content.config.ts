@@ -13,6 +13,11 @@ const posts = defineCollection({
       pubDatetime: z.date(),
       modDatetime: z.date().optional().nullable(),
       title: z.string(),
+      // kind decides where the hub files the post; series and part order a series; project names the source repo
+      kind: z.enum(["series", "concept", "fieldnote", "method"]),
+      series: z.string().optional(),
+      part: z.number().optional(),
+      project: z.string().optional(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
       tags: z.array(z.string()).default(["others"]),

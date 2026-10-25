@@ -1,0 +1,9 @@
+{
+  "sources": [
+    {
+      "project": "llm-serving-bench",
+      "path": "../Triton/docs/lessons",
+      "note": "only files with status: approved are copied"
+    }
+  ]
+}

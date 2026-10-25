@@ -43,6 +43,11 @@ const rssHref = getRelativeLocaleUrl(
     <link rel="icon" href={getAssetPath("favicon.ico")} />
     <link rel="canonical" href={canonicalURL} />
     <meta name="generator" content={Astro.generator} />
+    {
+      import.meta.env.PUBLIC_INDEXABLE !== "true" && (
+        <meta name="robots" content="noindex, nofollow" />
+      )
+    }
 
     <!-- Font -->
     <Font

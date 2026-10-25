@@ -1,8 +1,10 @@
 import type { APIRoute } from "astro";
 
+const indexable = import.meta.env.PUBLIC_INDEXABLE === "true";
+
 const getRobotsTxt = (sitemapURL: URL) => `
 User-agent: *
-Allow: /
+${indexable ? "Allow: /" : "Disallow: /"}
 
 Sitemap: ${sitemapURL.href}
 `;
