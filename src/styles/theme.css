@@ -20,6 +20,14 @@
   --muted: #e6e6e6;
   --muted-foreground: #6b7280;
   --border: #ece9e9;
+  /* reading blocks: rules, tints and callouts */
+  --rule: rgb(40 39 40 / 0.14);
+  --surface: rgb(40 39 40 / 0.035);
+  --surface-strong: rgb(40 39 40 / 0.065);
+  --callout-key-bg: #edf4fb;
+  --callout-key-border: #2463a6;
+  --callout-limits-bg: #fdf5e4;
+  --callout-limits-border: #a8650c;
 }
 
 /* Dark theme values */
@@ -31,4 +39,11 @@
   --muted: #343f60;
   --muted-foreground: #afb9ca;
   --border: #ab4b08;
+  --rule: rgb(234 237 243 / 0.16);
+  --surface: rgb(234 237 243 / 0.04);
+  --surface-strong: rgb(234 237 243 / 0.08);
+  --callout-key-bg: rgb(96 165 250 / 0.11);
+  --callout-key-border: #60a5fa;
+  --callout-limits-bg: rgb(251 191 36 / 0.09);
+  --callout-limits-border: #fbbf24;
 }
