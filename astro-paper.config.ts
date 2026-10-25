@@ -27,6 +27,7 @@ export default defineAstroPaperConfig({
   },
   socials: [
     { name: "github", url: "https://github.com/hoangphu7122002" },
+    { name: "linkedin", url: "https://www.linkedin.com/in/ph%C3%BA-nguy%E1%BB%85n-%C4%91%E1%BA%AFc-ho%C3%A0ng-303025221/" },
   ],
   shareLinks: [
     { name: "whatsapp", url: "https://wa.me/?text=" },
