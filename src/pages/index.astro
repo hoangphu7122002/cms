@@ -8,10 +8,10 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
-import SeriesCard from "@/components/SeriesCard.astro";
+import CollectionCard from "@/components/CollectionCard.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { getSeriesGroups } from "@/utils/getSeries";
+import { getCollections } from "@/utils/getCollections";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -25,7 +25,7 @@ const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
 const latestPosts = sortedPosts.slice(0, LATEST_COUNT);
-const seriesGroups = getSeriesGroups(posts);
+const collections = getCollections(posts);
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
 
@@ -89,18 +89,21 @@ const homePath = getRelativeLocaleUrl(locale, "");
     }
 
     {
-      seriesGroups.length > 0 && (
+      collections.length > 0 && (
         <section
-          id="series"
-          aria-labelledby="series-heading"
+          id="collections"
+          aria-labelledby="collections-heading"
           class="border-border border-b pt-10 pb-8"
         >
-          <h2 id="series-heading" class="text-2xl font-semibold tracking-wide">
-            {t.home.series}
+          <h2
+            id="collections-heading"
+            class="text-2xl font-semibold tracking-wide"
+          >
+            {t.home.collections}
           </h2>
           <ul class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
-            {seriesGroups.map(group => (
-              <SeriesCard {group} />
+            {collections.map(collection => (
+              <CollectionCard {collection} />
             ))}
           </ul>
         </section>

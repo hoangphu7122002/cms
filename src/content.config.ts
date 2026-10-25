@@ -17,6 +17,8 @@ const posts = defineCollection({
       kind: z.enum(["series", "concept", "fieldnote", "method"]),
       series: z.string().optional(),
       part: z.number().optional(),
+      // optional display name of the collection (ordered group) the post is in; see src/collections.ts
+      collection: z.string().optional(),
       project: z.string().optional(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),

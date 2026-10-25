@@ -1,5 +1,7 @@
 // Copy approved posts from the project repositories listed in manifest.json into src/content/posts/<project>/.
 // A post is copied only if its front matter has `status: approved` and every field the hub schema needs.
+// Front matter is copied as written (only `status` is dropped, `project` added), so optional fields such as
+// `collection: <name>` pass through; posts without one are named by src/collections.ts.
 // Usage: node scripts/sync.mjs [--dry]
 import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";

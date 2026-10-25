@@ -1,0 +1,53 @@
+---
+import { getPostUrl } from "@/utils/getPostPaths";
+import type { PostCollection } from "@/utils/getCollections";
+import { tplStr, useTranslations } from "@/i18n";
+
+type Props = { collection: PostCollection };
+
+const MAX_SHOWN = 5;
+
+const { collection } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+const count = collection.posts.length;
+const countLabel = tplStr(count === 1 ? t.home.postCount : t.home.postsCount, {
+  count,
+});
+const shown = collection.posts.slice(0, MAX_SHOWN);
+---
+
+<li class="border-border flex flex-col rounded-lg border p-4">
+  <h3 class="text-foreground font-serif text-lg leading-snug font-semibold">
+    {collection.name}
+  </h3>
+  <p class="font-ui text-muted-foreground text-sm">{countLabel}</p>
+
+  <ol class="font-ui mt-3 space-y-1.5 text-sm">
+    {
+      shown.map((post, i) => (
+        <li class="flex gap-2">
+          <span
+            aria-hidden="true"
+            class="text-muted-foreground w-6 flex-none text-end tabular-nums"
+          >
+            {i + 1}
+          </span>
+          <span class="sr-only">{tplStr(t.post.part, { n: i + 1 })}:</span>
+          <a
+            href={getPostUrl(post.id, post.filePath, Astro.currentLocale)}
+            class="text-foreground hover:text-accent decoration-accent underline underline-offset-4"
+          >
+            {post.data.title}
+          </a>
+        </li>
+      ))
+    }
+  </ol>
+  {
+    count > MAX_SHOWN && (
+      <p class="font-ui text-muted-foreground ms-8 mt-2 text-sm">
+        +{count - MAX_SHOWN}
+      </p>
+    )
+  }
+</li>

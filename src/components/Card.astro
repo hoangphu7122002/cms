@@ -1,12 +1,15 @@
 ---
-import type { CollectionEntry } from "astro:content";
+import { type CollectionEntry, getCollection } from "astro:content";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { toTransitionName } from "@/utils/toTransitionName";
 import { readingMinutes } from "@/utils/readingTime";
-import { seriesLabel } from "@/utils/seriesLabel";
+import {
+  findCollection,
+  getCollections,
+  positionIn,
+} from "@/utils/getCollections";
 import { slugifyStr } from "@/utils/slugify";
 import Datetime from "./Datetime.astro";
-import KindBadge from "./KindBadge.astro";
 import Tag from "./Tag.astro";
 import { tplStr, useTranslations } from "@/i18n";
 
@@ -18,53 +21,38 @@ const MAX_TAGS = 3;
 
 const { variant: Heading = "h2", id, data, filePath, body } = Astro.props;
 
-const {
-  title,
-  description,
-  kind,
-  series,
-  part,
-  tags,
-  pubDatetime,
-  modDatetime,
-  timezone,
-} = data;
+const { title, description, tags, pubDatetime, modDatetime, timezone } = data;
 const t = useTranslations(Astro.currentLocale);
 const minRead = tplStr(t.post.minRead, { count: readingMinutes(body) });
-const seriesName = seriesLabel(series);
-const partLabel = part !== undefined ? tplStr(t.post.part, { n: part }) : "";
+// getCollection is cached per build, so this stays cheap per card
+const collection = findCollection(
+  Astro.props,
+  getCollections(await getCollection("posts"))
+);
+const partLabel = collection
+  ? tplStr(t.post.part, { n: positionIn(Astro.props, collection) })
+  : "";
 const shownTags = tags.slice(0, MAX_TAGS);
 ---
 
 <li
   class="group border-border relative border-b py-6 first:pt-2 last:border-b-0"
 >
-  <p
-    class="font-ui text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-xs tracking-wider uppercase"
-  >
-    <KindBadge {kind} />
-    {
-      seriesName && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>{seriesName}</span>
-        </>
-      )
-    }
-    {
-      partLabel && (
-        <>
-          <span aria-hidden="true">·</span>
-          <span>{partLabel}</span>
-        </>
-      )
-    }
-  </p>
+  {
+    collection && (
+      <p class="font-ui text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-xs tracking-wider uppercase">
+        <span>{collection.name}</span>
+        <span aria-hidden="true">·</span>
+        <span>{partLabel}</span>
+      </p>
+    )
+  }
 
   <a
     href={getPostUrl(id, filePath, Astro.currentLocale)}
     class:list={[
-      "mt-2 inline-block",
+      { "mt-2": collection },
+      "inline-block",
       // the link covers the whole card; tags sit above it (z-10)
       "after:absolute after:inset-0 after:content-['']",
     ]}

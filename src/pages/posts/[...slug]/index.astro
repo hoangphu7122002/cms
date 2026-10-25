@@ -15,9 +15,13 @@ import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import TableOfContents from "./_components/TableOfContents.astro";
-import SeriesNav from "./_components/SeriesNav.astro";
-import SeriesPager from "./_components/SeriesPager.astro";
-import { getSeriesGroups, type SeriesGroup } from "@/utils/getSeries";
+import CollectionNav from "./_components/CollectionNav.astro";
+import CollectionPager from "./_components/CollectionPager.astro";
+import {
+  findCollection,
+  getCollections,
+  type PostCollection,
+} from "@/utils/getCollections";
 import { readingMinutes } from "@/utils/readingTime";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
@@ -25,13 +29,13 @@ import config from "@/config";
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   const sortedPosts = getSortedPosts(posts);
-  const groups = getSeriesGroups(posts);
+  const collections = getCollections(posts);
 
   return sortedPosts.map((post, index) => ({
     params: { slug: getPostSlug(post.id, post.filePath) },
     props: {
       post,
-      group: groups.find(g => g.posts.some(p => p.id === post.id)),
+      collection: findCollection(post, collections),
       // sortedPosts is newest-first, so "older" (prev) is a higher index
       // and "newer" (next) is a lower index.
       prevPost:
@@ -62,14 +66,15 @@ type AdjacentPost = {
 
 type Props = {
   post: CollectionEntry<"posts">;
-  group: SeriesGroup | undefined;
+  collection: PostCollection | undefined;
   prevPost: AdjacentPost;
   nextPost: AdjacentPost;
 };
 
-const { post, group, prevPost, nextPost } = Astro.props;
-// inside a series of 2+ parts, prev/next walk the series instead of the date order
-const seriesPager = group && group.posts.length > 1 ? group : undefined;
+const { post, collection, prevPost, nextPost } = Astro.props;
+// in a collection of 2+ posts, prev/next walk the collection, not the dates
+const pagerCollection =
+  collection && collection.posts.length > 1 ? collection : undefined;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
@@ -152,7 +157,7 @@ const ogImage = ogImageUrl
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
 
-    {group && <SeriesNav {post} {group} class="mt-6" />}
+    {collection && <CollectionNav {post} {collection} class="mt-6" />}
 
     <TableOfContents {headings} variant="inline" class="mt-6 xl:hidden" />
 
@@ -190,8 +195,8 @@ const ogImage = ogImageUrl
     <hr class="my-8 border-dashed" />
 
     {
-      seriesPager ? (
-        <SeriesPager {post} group={seriesPager} />
+      pagerCollection ? (
+        <CollectionPager {post} collection={pagerCollection} />
       ) : (
         <AdjacentPostNav {prevPost} {nextPost} />
       )

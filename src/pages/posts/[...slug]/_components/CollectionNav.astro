@@ -1,24 +1,23 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import { getPostUrl } from "@/utils/getPostPaths";
-import { partOfLabel, seriesTitle, type SeriesGroup } from "@/utils/getSeries";
+import { partOfLabel, type PostCollection } from "@/utils/getCollections";
 import { tplStr, useTranslations } from "@/i18n";
 
 type Props = {
   post: CollectionEntry<"posts">;
-  group: SeriesGroup;
+  collection: PostCollection;
   class?: string;
 };
 
-const { post, group, class: className } = Astro.props;
+const { post, collection, class: className } = Astro.props;
 const t = useTranslations(Astro.currentLocale);
-const title = seriesTitle(group, t);
-const position = partOfLabel(post, group, t);
-const many = group.posts.length > 1;
+const position = partOfLabel(post, collection, t);
+const many = collection.posts.length > 1;
 ---
 
 <nav
-  aria-label={`${t.series.label}: ${title}`}
+  aria-label={`${t.collection.label}: ${collection.name}`}
   data-pagefind-ignore
   class:list={[
     "border-border font-ui rounded-lg border px-4 py-3 text-sm",
@@ -29,14 +28,8 @@ const many = group.posts.length > 1;
     many ? (
       <details>
         <summary class="cursor-pointer">
-          <span class="text-muted-foreground">{t.series.label}:</span>{" "}
-          <span class="text-foreground font-semibold">{title}</span>
-          {group.project && (
-            <span class="text-muted-foreground font-mono text-xs">
-              {" "}
-              {group.project}
-            </span>
-          )}
+          <span class="text-muted-foreground">{t.collection.label}:</span>{" "}
+          <span class="text-foreground font-semibold">{collection.name}</span>
           <span aria-hidden="true" class="text-muted-foreground">
             {" "}
             ·{" "}
@@ -44,9 +37,8 @@ const many = group.posts.length > 1;
           <span class="text-muted-foreground">{position}</span>
         </summary>
         <ol class="mt-3 space-y-1">
-          {group.posts.map((p, i) => {
+          {collection.posts.map((p, i) => {
             const current = p.id === post.id;
-            const n = p.data.part ?? i + 1;
             return (
               <li
                 class:list={[
@@ -58,9 +50,11 @@ const many = group.posts.length > 1;
                   aria-hidden="true"
                   class="text-muted-foreground w-5 flex-none text-end tabular-nums"
                 >
-                  {n}
+                  {i + 1}
                 </span>
-                <span class="sr-only">{tplStr(t.post.part, { n })}:</span>
+                <span class="sr-only">
+                  {tplStr(t.post.part, { n: i + 1 })}:
+                </span>
                 {current ? (
                   <span
                     aria-current="page"
@@ -83,14 +77,8 @@ const many = group.posts.length > 1;
       </details>
     ) : (
       <p>
-        <span class="text-muted-foreground">{t.series.label}:</span>{" "}
-        <span class="text-foreground font-semibold">{title}</span>
-        {group.project && (
-          <span class="text-muted-foreground font-mono text-xs">
-            {" "}
-            {group.project}
-          </span>
-        )}
+        <span class="text-muted-foreground">{t.collection.label}:</span>{" "}
+        <span class="text-foreground font-semibold">{collection.name}</span>
         <span aria-hidden="true" class="text-muted-foreground">
           {" "}
           ·{" "}

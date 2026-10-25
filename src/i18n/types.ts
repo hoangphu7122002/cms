@@ -34,15 +34,14 @@ export interface UIStrings {
     recentPosts: string;
     allPosts: string;
     intro: string;
-    series: string;
+    collections: string;
     latest: string;
-    partCount: string;
-    partsCount: string;
+    postCount: string;
+    postsCount: string;
   };
-  series: {
+  collection: {
     label: string;
     partOf: string;
-    partPublished: string;
     previous: string;
     next: string;
   };
@@ -52,19 +51,6 @@ export interface UIStrings {
     sourceNote: string;
     rss: string;
     navLabel: string;
-  };
-  kinds: {
-    series: string;
-    concept: string;
-    fieldnote: string;
-    method: string;
-  };
-  /** plural kind names, used as the title of a series without its own name */
-  kindsPlural: {
-    series: string;
-    concept: string;
-    fieldnote: string;
-    method: string;
   };
   pages: {
     tagTitle: string;

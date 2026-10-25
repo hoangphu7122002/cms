@@ -36,18 +36,17 @@ export default {
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
     intro:
-      "Posts come in four kinds: series parts read in order, concepts explain one idea, field notes tell one thing that went wrong, methods show how we measure.",
-    series: "Series",
+      "Posts are grouped into collections that read in order. Start a collection at part 1, or pick any post below.",
+    collections: "Collections",
     latest: "Latest",
-    partCount: "{{count}} part",
-    partsCount: "{{count}} parts",
+    postCount: "{{count}} post",
+    postsCount: "{{count}} posts",
   },
-  series: {
-    label: "Series",
+  collection: {
+    label: "Collection",
     partOf: "Part {{n}} of {{total}}",
-    partPublished: "Part {{n}}, {{count}} published so far",
-    previous: "Previous in series",
-    next: "Next in series",
+    previous: "Previous in collection",
+    next: "Next in collection",
   },
   footer: {
     copyright: "Copyright",
@@ -55,18 +54,6 @@ export default {
     sourceNote: "Each post is written from the project repo it links to.",
     rss: "RSS",
     navLabel: "Footer",
-  },
-  kinds: {
-    series: "Series",
-    concept: "Concept",
-    fieldnote: "Field note",
-    method: "Method",
-  },
-  kindsPlural: {
-    series: "Series",
-    concept: "Concepts",
-    fieldnote: "Field notes",
-    method: "Methods",
   },
   pages: {
     tagTitle: "Tag",
