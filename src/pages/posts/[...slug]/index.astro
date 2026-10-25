@@ -15,6 +15,13 @@ import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import TableOfContents from "./_components/TableOfContents.astro";
+import CollectionNav from "./_components/CollectionNav.astro";
+import CollectionPager from "./_components/CollectionPager.astro";
+import {
+  findCollection,
+  getCollections,
+  type PostCollection,
+} from "@/utils/getCollections";
 import { readingMinutes } from "@/utils/readingTime";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
@@ -22,11 +29,13 @@ import config from "@/config";
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   const sortedPosts = getSortedPosts(posts);
+  const collections = getCollections(posts);
 
   return sortedPosts.map((post, index) => ({
     params: { slug: getPostSlug(post.id, post.filePath) },
     props: {
       post,
+      collection: findCollection(post, collections),
       // sortedPosts is newest-first, so "older" (prev) is a higher index
       // and "newer" (next) is a lower index.
       prevPost:
@@ -57,11 +66,15 @@ type AdjacentPost = {
 
 type Props = {
   post: CollectionEntry<"posts">;
+  collection: PostCollection | undefined;
   prevPost: AdjacentPost;
   nextPost: AdjacentPost;
 };
 
-const { post, prevPost, nextPost } = Astro.props;
+const { post, collection, prevPost, nextPost } = Astro.props;
+// in a collection of 2+ posts, prev/next walk the collection, not the dates
+const pagerCollection =
+  collection && collection.posts.length > 1 ? collection : undefined;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
@@ -144,6 +157,8 @@ const ogImage = ogImageUrl
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
 
+    {collection && <CollectionNav {post} {collection} class="mt-6" />}
+
     <TableOfContents {headings} variant="inline" class="mt-6 xl:hidden" />
 
     <aside class="absolute start-full top-0 bottom-0 hidden w-56 xl:block">
@@ -179,7 +194,13 @@ const ogImage = ogImageUrl
 
     <hr class="my-8 border-dashed" />
 
-    <AdjacentPostNav {prevPost} {nextPost} />
+    {
+      pagerCollection ? (
+        <CollectionPager {post} collection={pagerCollection} />
+      ) : (
+        <AdjacentPostNav {prevPost} {nextPost} />
+      )
+    }
   </main>
   <Footer />
 </PostLayout>

@@ -33,6 +33,17 @@ export interface UIStrings {
     featured: string;
     recentPosts: string;
     allPosts: string;
+    intro: string;
+    collections: string;
+    latest: string;
+    postCount: string;
+    postsCount: string;
+  };
+  collection: {
+    label: string;
+    partOf: string;
+    previous: string;
+    next: string;
   };
   footer: {
     copyright: string;
@@ -40,12 +51,6 @@ export interface UIStrings {
     sourceNote: string;
     rss: string;
     navLabel: string;
-  };
-  kinds: {
-    series: string;
-    concept: string;
-    fieldnote: string;
-    method: string;
   };
   pages: {
     tagTitle: string;

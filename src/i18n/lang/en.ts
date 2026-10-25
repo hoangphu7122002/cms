@@ -35,6 +35,18 @@ export default {
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
+    intro:
+      "Posts are grouped into collections that read in order. Start a collection at part 1, or pick any post below.",
+    collections: "Collections",
+    latest: "Latest",
+    postCount: "{{count}} post",
+    postsCount: "{{count}} posts",
+  },
+  collection: {
+    label: "Collection",
+    partOf: "Part {{n}} of {{total}}",
+    previous: "Previous in collection",
+    next: "Next in collection",
   },
   footer: {
     copyright: "Copyright",
@@ -42,12 +54,6 @@ export default {
     sourceNote: "Each post is written from the project repo it links to.",
     rss: "RSS",
     navLabel: "Footer",
-  },
-  kinds: {
-    series: "Series",
-    concept: "Concept",
-    fieldnote: "Field note",
-    method: "Method",
   },
   pages: {
     tagTitle: "Tag",

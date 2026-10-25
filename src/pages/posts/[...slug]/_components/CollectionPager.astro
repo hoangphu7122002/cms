@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from "astro:content";
+import IconArrowLeft from "@/assets/icons/IconArrowLeft.svg";
+import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
+import { getPostUrl } from "@/utils/getPostPaths";
+import type { PostCollection } from "@/utils/getCollections";
+import { tplStr, useTranslations } from "@/i18n";
+
+type Props = {
+  post: CollectionEntry<"posts">;
+  collection: PostCollection;
+};
+
+const { post, collection } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+const { posts } = collection;
+const index = posts.findIndex(p => p.id === post.id);
+const prev = index > 0 ? posts[index - 1] : undefined;
+const next =
+  index >= 0 && index < posts.length - 1 ? posts[index + 1] : undefined;
+const partOf = (p: CollectionEntry<"posts">) =>
+  tplStr(t.post.part, { n: posts.indexOf(p) + 1 });
+const linkClass =
+  "border-border hover:border-accent flex h-full gap-2 rounded-lg border p-4 transition-colors motion-reduce:transition-none";
+---
+
+<nav
+  aria-label={`${t.collection.label}: ${collection.name}`}
+  data-pagefind-ignore
+  class="font-ui my-8 grid grid-cols-1 gap-4 sm:grid-cols-2"
+>
+  {
+    prev && (
+      <a
+        href={getPostUrl(prev.id, prev.filePath, Astro.currentLocale)}
+        rel="prev"
+        class={linkClass}
+      >
+        <IconArrowLeft class="text-muted-foreground mt-0.5 inline-block flex-none rtl:rotate-180" />
+        <span>
+          <span class="text-muted-foreground block text-xs tracking-wider uppercase">
+            {t.collection.previous} · {partOf(prev)}
+          </span>
+          <span class="text-foreground mt-1 block font-serif font-semibold">
+            {prev.data.title}
+          </span>
+        </span>
+      </a>
+    )
+  }
+  {
+    next && (
+      <a
+        href={getPostUrl(next.id, next.filePath, Astro.currentLocale)}
+        rel="next"
+        class:list={[linkClass, "justify-end text-end sm:col-start-2"]}
+      >
+        <span>
+          <span class="text-muted-foreground block text-xs tracking-wider uppercase">
+            {t.collection.next} · {partOf(next)}
+          </span>
+          <span class="text-foreground mt-1 block font-serif font-semibold">
+            {next.data.title}
+          </span>
+        </span>
+        <IconArrowRight class="text-muted-foreground mt-0.5 inline-block flex-none rtl:rotate-180" />
+      </a>
+    )
+  }
+</nav>
