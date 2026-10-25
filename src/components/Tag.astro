@@ -21,10 +21,13 @@ const {
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const href = getRelativeLocaleUrl(locale, `tags/${tag}/`);
+// the link is the tap area (44px tall on phones); the pill is drawn inside
+const linkClass =
+  "group/tag inline-flex items-center justify-center max-sm:min-h-11 max-sm:min-w-11";
 const chipClass = [
   "font-ui inline-block rounded-full border border-border leading-snug",
   "text-muted-foreground transition-colors motion-reduce:transition-none",
-  "hover:border-accent hover:text-accent focus-visible:text-accent",
+  "group-hover/tag:border-accent group-hover/tag:text-accent group-focus-visible/tag:text-accent",
   { "px-2.5 py-0.5 text-xs": size === "sm" },
   { "px-3 py-1 text-sm": size === "lg" },
 ];
@@ -33,12 +36,12 @@ const chipClass = [
 <li class={className}>
   {
     transition ? (
-      <a {href} transition:name={tag} class:list={chipClass}>
-        {tagName}
+      <a {href} transition:name={tag} class={linkClass}>
+        <span class:list={chipClass}>{tagName}</span>
       </a>
     ) : (
-      <a {href} class:list={chipClass}>
-        {tagName}
+      <a {href} class={linkClass}>
+        <span class:list={chipClass}>{tagName}</span>
       </a>
     )
   }
