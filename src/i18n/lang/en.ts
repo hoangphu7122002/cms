@@ -22,6 +22,7 @@ export default {
     previousPost: "Previous Post",
     nextPost: "Next Post",
     minRead: "{{count}} min read",
+    part: "Part {{n}}",
     onThisPage: "On this page",
   },
   pagination: {
@@ -38,6 +39,15 @@ export default {
   footer: {
     copyright: "Copyright",
     allRightsReserved: "All rights reserved.",
+    sourceNote: "Each post is written from the project repo it links to.",
+    rss: "RSS",
+    navLabel: "Footer",
+  },
+  kinds: {
+    series: "Series",
+    concept: "Concept",
+    fieldnote: "Field note",
+    method: "Method",
   },
   pages: {
     tagTitle: "Tag",
