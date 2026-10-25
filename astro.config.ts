@@ -17,6 +17,11 @@ import {
   transformerNotationWordHighlight,
 } from "@shikijs/transformers";
 import { transformerFileName } from "./src/utils/transformers/fileName";
+import {
+  rehypeFigureCaptions,
+  rehypeSectionCallouts,
+  rehypeTableScroll,
+} from "./src/utils/rehype/readingBlocks";
 import config from "./astro-paper.config";
 
 export default defineConfig({
@@ -41,10 +46,15 @@ export default defineConfig({
         remarkToc,
         [remarkCollapse, { test: "Table of contents" }],
       ],
-      rehypePlugins: [rehypeCallouts],
+      rehypePlugins: [
+        rehypeCallouts,
+        rehypeFigureCaptions,
+        rehypeTableScroll,
+        rehypeSectionCallouts,
+      ],
     }),
     shikiConfig: {
-      themes: { light: "min-light", dark: "night-owl" },
+      themes: { light: "github-light", dark: "night-owl" },
       defaultColor: false,
       wrap: false,
       transformers: [

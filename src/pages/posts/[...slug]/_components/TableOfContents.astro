@@ -1,0 +1,93 @@
+---
+import type { MarkdownHeading } from "astro";
+import { useTranslations } from "@/i18n";
+
+type Props = {
+  headings: MarkdownHeading[];
+  /** "inline": collapsed <details> above the post; "sidebar": sticky list. */
+  variant: "inline" | "sidebar";
+  class?: string;
+};
+
+const { headings, variant, class: className } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+
+const items = headings.filter(h => h.depth === 2 || h.depth === 3);
+---
+
+{
+  items.length >= 2 &&
+    (variant === "inline" ? (
+      <details class:list={["toc toc-inline", className]} data-pagefind-ignore>
+        <summary>{t.post.onThisPage}</summary>
+        <ol>
+          {items.map(h => (
+            <li class:list={[`toc-depth-${h.depth}`]}>
+              <a href={`#${h.slug}`}>{h.text}</a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    ) : (
+      <nav
+        class:list={["toc toc-sidebar", className]}
+        aria-label={t.post.onThisPage}
+        data-pagefind-ignore
+      >
+        <p class="toc-title">{t.post.onThisPage}</p>
+        <ol>
+          {items.map(h => (
+            <li class:list={[`toc-depth-${h.depth}`]}>
+              <a href={`#${h.slug}`} data-toc-link={h.slug}>
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </nav>
+    ))
+}
+
+<script>
+  /** Highlights the sidebar entry of the section being read. */
+  function trackActiveHeading() {
+    const links = Array.from(
+      document.querySelectorAll<HTMLAnchorElement>("[data-toc-link]")
+    );
+    if (links.length === 0) return;
+    const headings = links
+      .map(link => document.getElementById(link.dataset.tocLink ?? ""))
+      .filter((h): h is HTMLElement => h !== null);
+
+    const update = () => {
+      let current = headings[0];
+      for (const h of headings) {
+        if (h.getBoundingClientRect().top <= 120) current = h;
+      }
+      for (const link of links) {
+        if (link.dataset.tocLink === current?.id) {
+          link.setAttribute("aria-current", "location");
+        } else {
+          link.removeAttribute("aria-current");
+        }
+      }
+    };
+
+    let ticking = false;
+    const onScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    };
+    document.addEventListener("scroll", onScroll, { passive: true });
+    document.addEventListener("astro:before-swap", () =>
+      document.removeEventListener("scroll", onScroll)
+    );
+    update();
+  }
+
+  document.addEventListener("astro:page-load", trackActiveHeading);
+</script>

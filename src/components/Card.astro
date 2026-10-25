@@ -3,14 +3,18 @@ import type { CollectionEntry } from "astro:content";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { toTransitionName } from "@/utils/toTransitionName";
 import Datetime from "./Datetime.astro";
+import { readingMinutes } from "@/utils/readingTime";
+import { tplStr, useTranslations } from "@/i18n";
 
 type Props = {
   variant?: "h2" | "h3";
 } & CollectionEntry<"posts">;
 
-const { variant: Heading = "h2", id, data, filePath } = Astro.props;
+const { variant: Heading = "h2", id, data, filePath, body } = Astro.props;
 
 const { title, description, ...props } = data;
+const t = useTranslations(Astro.currentLocale);
+const minRead = tplStr(t.post.minRead, { count: readingMinutes(body) });
 ---
 
 <li class="my-6">
@@ -26,6 +30,10 @@ const { title, description, ...props } = data;
       {title}
     </Heading>
   </a>
-  <Datetime {...props} />
+  <div class="flex flex-wrap items-center gap-x-2">
+    <Datetime {...props} />
+    <span aria-hidden="true" class="text-muted-foreground">·</span>
+    <span class="text-muted-foreground text-sm">{minRead}</span>
+  </div>
   <p>{description}</p>
 </li>

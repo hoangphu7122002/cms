@@ -21,6 +21,8 @@ export default {
     editPage: "Edit page",
     previousPost: "Previous Post",
     nextPost: "Next Post",
+    minRead: "{{count}} min read",
+    onThisPage: "On this page",
   },
   pagination: {
     prev: "Prev",
