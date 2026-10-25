@@ -1,6 +1,6 @@
 # cms
 
-A static blog hub for series, concepts, field notes and methods, built from the AstroPaper theme (Astro, Tailwind, Pagefind search). Live at https://hoangphu7122002.github.io/cms/ (not indexed by search engines until `PUBLIC_INDEXABLE` is set to `"true"` in `.github/workflows/deploy.yml`).
+A static blog hub for series, concepts, field notes and methods, built from the AstroPaper theme (Astro, Tailwind, Pagefind search). Live at https://blog.phufamily.com/ (not indexed by search engines until `PUBLIC_INDEXABLE` is set to `"true"` in `.github/workflows/deploy.yml`).
 
 ## Four kinds of posts
 
@@ -16,7 +16,7 @@ Adding another project is one entry in `manifest.json`.
 
 ```bash
 pnpm install
-pnpm dev          # http://localhost:4321/cms/
+pnpm dev          # http://localhost:4321/
 pnpm build        # type check, build, search index
 node scripts/sync.mjs --dry
 ```

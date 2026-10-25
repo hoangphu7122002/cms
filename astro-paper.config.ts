@@ -2,7 +2,7 @@ import { defineAstroPaperConfig } from "./src/types/config";
 
 export default defineAstroPaperConfig({
   site: {
-    url: "https://hoangphu7122002.github.io/cms/",
+    url: "https://blog.phufamily.com/",
     title: "Hoang Phu: Lessons",
     description: "Series, concepts, field notes and methods from building and measuring LLM serving systems.",
     author: "Hoang Phu",
