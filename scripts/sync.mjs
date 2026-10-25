@@ -3,6 +3,7 @@
 // Usage: node scripts/sync.mjs [--dry]
 import { readFileSync, readdirSync, mkdirSync, writeFileSync, existsSync } from "node:fs";
 import { join, resolve } from "node:path";
+import { cpSync } from "node:fs";
 
 const KINDS = ["series", "concept", "fieldnote", "method"];
 const REQUIRED = ["title", "description", "pubDatetime", "kind"];
@@ -20,6 +21,11 @@ function frontMatter(text) {
   }
   return fm;
 }
+
+// Checker markers (src, calc) are for the project repo's lessons_check.py; readers never see them.
+const strip = text => text.replace(/[ \t]*<!--\s*(?:src|calc):[\s\S]*?-->/g, "").replace(/[ \t]+$/gm, "");
+// A post refers to figures/NAME.png; Astro wants a relative path starting with ./ to bundle the image.
+const localImages = text => text.replace(/(!\[[^\]]*\]\()(?!\.{0,2}\/|https?:|\/)(figures\/)/g, "$1./$2");
 
 let copied = 0;
 let skipped = 0;
@@ -46,7 +52,11 @@ for (const src of manifest.sources) {
     if (!dry) {
       mkdirSync(out, { recursive: true });
       const hasProject = /^project:/m.test(fm.__raw ?? text.split("\n---\n")[0]);
-      writeFileSync(join(out, name), text.replace(/^status:.*\n/m, hasProject ? "" : `project: ${src.project}\n`));
+      const body = localImages(strip(text)).replace(/^status:.*\n/m, hasProject ? "" : `project: ${src.project}\n`);
+      writeFileSync(join(out, name), body);
+      if (existsSync(join(dir, "figures"))) {
+        cpSync(join(dir, "figures"), join(out, "figures"), { recursive: true, filter: f => !f.endsWith(".py") });
+      }
     }
     copied++;
     console.log(`${dry ? "would copy" : "copied"} ${src.project}/${name}`);
