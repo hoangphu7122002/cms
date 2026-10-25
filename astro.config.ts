@@ -70,13 +70,16 @@ export default defineConfig({
   },
   fonts: [
     {
+      // Only the OG image endpoints (satori needs TTF) use this font.
+      // Pages use system stacks (src/styles/theme.css), so no font is
+      // preloaded or shipped to readers.
       name: "Google Sans Code",
       cssVariable: "--font-google-sans-code",
       provider: fontProviders.google(),
       fallbacks: ["monospace"],
-      weights: [300, 400, 500, 600, 700],
-      styles: ["normal", "italic"],
-      formats: ["woff", "ttf"],
+      weights: [400, 700],
+      styles: ["normal"],
+      formats: ["ttf"],
     },
   ],
   env: {

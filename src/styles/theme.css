@@ -7,43 +7,90 @@
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-app: var(--font-google-sans-code);
+  /* post kinds: text colour + tinted badge background */
+  --color-kind-series: var(--kind-series);
+  --color-kind-series-bg: var(--kind-series-bg);
+  --color-kind-concept: var(--kind-concept);
+  --color-kind-concept-bg: var(--kind-concept-bg);
+  --color-kind-fieldnote: var(--kind-fieldnote);
+  --color-kind-fieldnote-bg: var(--kind-fieldnote-bg);
+  --color-kind-method: var(--kind-method);
+  --color-kind-method-bg: var(--kind-method-bg);
+  /* system stacks only: no web font is shipped to readers */
+  --font-ui: var(--stack-ui);
+  --font-serif: var(--stack-serif);
+  --font-mono: var(--stack-mono);
 }
+
+/* Font stacks (same in both themes) */
+:root {
+  --stack-ui:
+    system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial,
+    sans-serif;
+  --stack-serif:
+    "Iowan Old Style", "Charter", "Bitstream Charter", "Sitka Text", Cambria,
+    Georgia, ui-serif, serif;
+  --stack-mono:
+    ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono",
+    monospace;
+}
+
+/*
+ * "Quiet paper" palette. Contrast (WCAG 2.x) checked for every text and
+ * badge pair: text >= 4.5:1, UI strokes >= 3:1, in both themes.
+ */
 
 /* Light theme values */
 :root,
 [data-theme="light"] {
-  --background: #fdfdfd;
-  --foreground: #282728;
-  --accent: #006cac;
+  --background: #fbfaf7;
+  --foreground: #1f2328;
+  --accent: #0b5cad;
   --accent-foreground: #ffffff;
-  --muted: #e6e6e6;
-  --muted-foreground: #6b7280;
-  --border: #ece9e9;
+  --muted: #efece6;
+  --muted-foreground: #585f69;
+  --border: #e3dfd6;
   /* reading blocks: rules, tints and callouts */
-  --rule: rgb(40 39 40 / 0.14);
-  --surface: rgb(40 39 40 / 0.035);
-  --surface-strong: rgb(40 39 40 / 0.065);
-  --callout-key-bg: #edf4fb;
+  --rule: rgb(31 35 40 / 0.14);
+  --surface: rgb(31 35 40 / 0.035);
+  --surface-strong: rgb(31 35 40 / 0.065);
+  --callout-key-bg: #edf3fa;
   --callout-key-border: #2463a6;
-  --callout-limits-bg: #fdf5e4;
-  --callout-limits-border: #a8650c;
+  --callout-limits-bg: #fbf3e2;
+  --callout-limits-border: #9a5b00;
+  /* post kinds (badge text on its own tint and on the page) */
+  --kind-series: #0b5cad;
+  --kind-series-bg: #e3eaf0;
+  --kind-concept: #6440b8;
+  --kind-concept-bg: #ece7f1;
+  --kind-fieldnote: #1b6e45;
+  --kind-fieldnote-bg: #e5ece5;
+  --kind-method: #8a5200;
+  --kind-method-bg: #f0e9de;
 }
 
 /* Dark theme values */
 [data-theme="dark"] {
-  --background: #212737;
-  --foreground: #eaedf3;
-  --accent: #ff6b01;
-  --accent-foreground: #ffffff;
-  --muted: #343f60;
-  --muted-foreground: #afb9ca;
-  --border: #ab4b08;
-  --rule: rgb(234 237 243 / 0.16);
-  --surface: rgb(234 237 243 / 0.04);
-  --surface-strong: rgb(234 237 243 / 0.08);
-  --callout-key-bg: rgb(96 165 250 / 0.11);
-  --callout-key-border: #60a5fa;
-  --callout-limits-bg: rgb(251 191 36 / 0.09);
-  --callout-limits-border: #fbbf24;
+  --background: #14181f;
+  --foreground: #e6e9ef;
+  --accent: #6cb2ff;
+  --accent-foreground: #0b1220;
+  --muted: #232a36;
+  --muted-foreground: #a3acb9;
+  --border: #2a3140;
+  --rule: rgb(230 233 239 / 0.16);
+  --surface: rgb(230 233 239 / 0.04);
+  --surface-strong: rgb(230 233 239 / 0.08);
+  --callout-key-bg: rgb(108 178 255 / 0.11);
+  --callout-key-border: #6cb2ff;
+  --callout-limits-bg: rgb(240 185 92 / 0.09);
+  --callout-limits-border: #f0b95c;
+  --kind-series: #6cb2ff;
+  --kind-series-bg: #202e3e;
+  --kind-concept: #b79cff;
+  --kind-concept-bg: #2b2a3e;
+  --kind-fieldnote: #6fd3a0;
+  --kind-fieldnote-bg: #213231;
+  --kind-method: #f0b95c;
+  --kind-method-bg: #332f28;
 }
