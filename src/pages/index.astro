@@ -8,12 +8,15 @@ import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
+import SeriesCard from "@/components/SeriesCard.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
+import { getSeriesGroups } from "@/utils/getSeries";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
-const { socials, posts: postsConfig } = config;
+const { socials } = config;
+const LATEST_COUNT = 5;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
@@ -21,7 +24,8 @@ const t = useTranslations(locale);
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const recentPosts = sortedPosts.filter(({ data }) => !data.featured);
+const latestPosts = sortedPosts.slice(0, LATEST_COUNT);
+const seriesGroups = getSeriesGroups(posts);
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
 
@@ -56,6 +60,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
         What I learn while building and measuring LLM serving systems on GPUs:
         the numbers, the limits of each measurement, and what went wrong.
       </p>
+      <p class="text-muted-foreground mt-3 text-sm">{t.home.intro}</p>
       {
         socials.length > 0 && (
           <div class="mt-4 flex max-sm:flex-col sm:items-center">
@@ -70,13 +75,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
 
     {
       featuredPosts.length > 0 && (
-        <section
-          id="featured"
-          class:list={[
-            "pt-12 pb-6",
-            { "border-border border-b": recentPosts.length > 0 },
-          ]}
-        >
+        <section id="featured" class="border-border border-b pt-10 pb-6">
           <h2 class="text-2xl font-semibold tracking-wide">
             {t.home.featured}
           </h2>
@@ -90,13 +89,36 @@ const homePath = getRelativeLocaleUrl(locale, "");
     }
 
     {
-      recentPosts.length > 0 && (
-        <section id="recent-posts" class="pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">
-            {t.home.recentPosts}
+      seriesGroups.length > 0 && (
+        <section
+          id="series"
+          aria-labelledby="series-heading"
+          class="border-border border-b pt-10 pb-8"
+        >
+          <h2 id="series-heading" class="text-2xl font-semibold tracking-wide">
+            {t.home.series}
+          </h2>
+          <ul class="mt-4 grid grid-cols-1 gap-4 sm:grid-cols-2">
+            {seriesGroups.map(group => (
+              <SeriesCard {group} />
+            ))}
+          </ul>
+        </section>
+      )
+    }
+
+    {
+      latestPosts.length > 0 && (
+        <section
+          id="latest"
+          aria-labelledby="latest-heading"
+          class="pt-10 pb-6"
+        >
+          <h2 id="latest-heading" class="text-2xl font-semibold tracking-wide">
+            {t.home.latest}
           </h2>
           <ul>
-            {recentPosts.slice(0, postsConfig.perIndex).map(data => (
+            {latestPosts.map(data => (
               <Card variant="h3" {...data} />
             ))}
           </ul>

@@ -35,6 +35,19 @@ export default {
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
+    intro:
+      "Posts come in four kinds: series parts read in order, concepts explain one idea, field notes tell one thing that went wrong, methods show how we measure.",
+    series: "Series",
+    latest: "Latest",
+    partCount: "{{count}} part",
+    partsCount: "{{count}} parts",
+  },
+  series: {
+    label: "Series",
+    partOf: "Part {{n}} of {{total}}",
+    partPublished: "Part {{n}}, {{count}} published so far",
+    previous: "Previous in series",
+    next: "Next in series",
   },
   footer: {
     copyright: "Copyright",
@@ -48,6 +61,12 @@ export default {
     concept: "Concept",
     fieldnote: "Field note",
     method: "Method",
+  },
+  kindsPlural: {
+    series: "Series",
+    concept: "Concepts",
+    fieldnote: "Field notes",
+    method: "Methods",
   },
   pages: {
     tagTitle: "Tag",

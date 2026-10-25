@@ -1,0 +1,102 @@
+---
+import type { CollectionEntry } from "astro:content";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { partOfLabel, seriesTitle, type SeriesGroup } from "@/utils/getSeries";
+import { tplStr, useTranslations } from "@/i18n";
+
+type Props = {
+  post: CollectionEntry<"posts">;
+  group: SeriesGroup;
+  class?: string;
+};
+
+const { post, group, class: className } = Astro.props;
+const t = useTranslations(Astro.currentLocale);
+const title = seriesTitle(group, t);
+const position = partOfLabel(post, group, t);
+const many = group.posts.length > 1;
+---
+
+<nav
+  aria-label={`${t.series.label}: ${title}`}
+  data-pagefind-ignore
+  class:list={[
+    "border-border font-ui rounded-lg border px-4 py-3 text-sm",
+    className,
+  ]}
+>
+  {
+    many ? (
+      <details>
+        <summary class="cursor-pointer">
+          <span class="text-muted-foreground">{t.series.label}:</span>{" "}
+          <span class="text-foreground font-semibold">{title}</span>
+          {group.project && (
+            <span class="text-muted-foreground font-mono text-xs">
+              {" "}
+              {group.project}
+            </span>
+          )}
+          <span aria-hidden="true" class="text-muted-foreground">
+            {" "}
+            ·{" "}
+          </span>
+          <span class="text-muted-foreground">{position}</span>
+        </summary>
+        <ol class="mt-3 space-y-1">
+          {group.posts.map((p, i) => {
+            const current = p.id === post.id;
+            const n = p.data.part ?? i + 1;
+            return (
+              <li
+                class:list={[
+                  "flex gap-2 border-s-2 ps-2",
+                  current ? "border-accent" : "border-transparent",
+                ]}
+              >
+                <span
+                  aria-hidden="true"
+                  class="text-muted-foreground w-5 flex-none text-end tabular-nums"
+                >
+                  {n}
+                </span>
+                <span class="sr-only">{tplStr(t.post.part, { n })}:</span>
+                {current ? (
+                  <span
+                    aria-current="page"
+                    class="text-foreground font-semibold"
+                  >
+                    {p.data.title}
+                  </span>
+                ) : (
+                  <a
+                    href={getPostUrl(p.id, p.filePath, Astro.currentLocale)}
+                    class="text-foreground hover:text-accent decoration-accent underline underline-offset-4"
+                  >
+                    {p.data.title}
+                  </a>
+                )}
+              </li>
+            );
+          })}
+        </ol>
+      </details>
+    ) : (
+      <p>
+        <span class="text-muted-foreground">{t.series.label}:</span>{" "}
+        <span class="text-foreground font-semibold">{title}</span>
+        {group.project && (
+          <span class="text-muted-foreground font-mono text-xs">
+            {" "}
+            {group.project}
+          </span>
+        )}
+        <span aria-hidden="true" class="text-muted-foreground">
+          {" "}
+          ·{" "}
+        </span>
+        <span class="text-muted-foreground">{position}</span>
+      </p>
+    )
+  }
+</nav>

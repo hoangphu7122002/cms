@@ -33,6 +33,18 @@ export interface UIStrings {
     featured: string;
     recentPosts: string;
     allPosts: string;
+    intro: string;
+    series: string;
+    latest: string;
+    partCount: string;
+    partsCount: string;
+  };
+  series: {
+    label: string;
+    partOf: string;
+    partPublished: string;
+    previous: string;
+    next: string;
   };
   footer: {
     copyright: string;
@@ -42,6 +54,13 @@ export interface UIStrings {
     navLabel: string;
   };
   kinds: {
+    series: string;
+    concept: string;
+    fieldnote: string;
+    method: string;
+  };
+  /** plural kind names, used as the title of a series without its own name */
+  kindsPlural: {
     series: string;
     concept: string;
     fieldnote: string;

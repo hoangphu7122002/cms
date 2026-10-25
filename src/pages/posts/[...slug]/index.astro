@@ -15,6 +15,9 @@ import BackButton from "./_components/BackButton.astro";
 import BackToTopButton from "./_components/BackToTopButton.astro";
 import AdjacentPostNav from "./_components/AdjacentPostNav.astro";
 import TableOfContents from "./_components/TableOfContents.astro";
+import SeriesNav from "./_components/SeriesNav.astro";
+import SeriesPager from "./_components/SeriesPager.astro";
+import { getSeriesGroups, type SeriesGroup } from "@/utils/getSeries";
 import { readingMinutes } from "@/utils/readingTime";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
@@ -22,11 +25,13 @@ import config from "@/config";
 export async function getStaticPaths() {
   const posts = await getCollection("posts");
   const sortedPosts = getSortedPosts(posts);
+  const groups = getSeriesGroups(posts);
 
   return sortedPosts.map((post, index) => ({
     params: { slug: getPostSlug(post.id, post.filePath) },
     props: {
       post,
+      group: groups.find(g => g.posts.some(p => p.id === post.id)),
       // sortedPosts is newest-first, so "older" (prev) is a higher index
       // and "newer" (next) is a lower index.
       prevPost:
@@ -57,11 +62,14 @@ type AdjacentPost = {
 
 type Props = {
   post: CollectionEntry<"posts">;
+  group: SeriesGroup | undefined;
   prevPost: AdjacentPost;
   nextPost: AdjacentPost;
 };
 
-const { post, prevPost, nextPost } = Astro.props;
+const { post, group, prevPost, nextPost } = Astro.props;
+// inside a series of 2+ parts, prev/next walk the series instead of the date order
+const seriesPager = group && group.posts.length > 1 ? group : undefined;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
@@ -144,6 +152,8 @@ const ogImage = ogImageUrl
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
 
+    {group && <SeriesNav {post} {group} class="mt-6" />}
+
     <TableOfContents {headings} variant="inline" class="mt-6 xl:hidden" />
 
     <aside class="absolute start-full top-0 bottom-0 hidden w-56 xl:block">
@@ -179,7 +189,13 @@ const ogImage = ogImageUrl
 
     <hr class="my-8 border-dashed" />
 
-    <AdjacentPostNav {prevPost} {nextPost} />
+    {
+      seriesPager ? (
+        <SeriesPager {post} group={seriesPager} />
+      ) : (
+        <AdjacentPostNav {prevPost} {nextPost} />
+      )
+    }
   </main>
   <Footer />
 </PostLayout>
