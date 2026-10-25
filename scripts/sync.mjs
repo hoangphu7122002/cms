@@ -23,7 +23,7 @@ function frontMatter(text) {
 }
 
 // Checker markers (src, calc) are for the project repo's lessons_check.py; readers never see them.
-const strip = text => text.replace(/[ \t]*<!--\s*(?:src|calc):[\s\S]*?-->/g, "").replace(/[ \t]+$/gm, "");
+const strip = text => text.replace(/[ \t]*<!--\s*(?:(?:src|calc):|runs \(stripped on sync\):)[\s\S]*?-->/g, "").replace(/[ \t]+$/gm, "");
 // A post refers to figures/NAME.png; Astro wants a relative path starting with ./ to bundle the image.
 const localImages = text => text.replace(/(!\[[^\]]*\]\()(?!\.{0,2}\/|https?:|\/)(figures\/)/g, "$1./$2");
 
