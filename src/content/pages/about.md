@@ -14,4 +14,4 @@ The posts today come from one project, a serving system for large language model
 
 ## How the posts are made
 
-The posts are written with Claude Code, and the numbers in them are checked against the runs they came from. See [About this site](/posts/about-this-site/) for the four kinds of posts and how they are checked.
+The posts are written with Claude Code, and the numbers in them are checked against the runs they came from.
