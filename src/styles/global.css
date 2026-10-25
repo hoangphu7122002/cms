@@ -31,9 +31,10 @@
 }
 
 @utility active-nav {
-  @apply underline decoration-wavy decoration-2 underline-offset-8;
+  @apply border-accent border-b-2;
 }
 
+/* clear the sticky header (about 3.5rem) when jumping to an anchor */
 :target {
-  scroll-margin-block: 1rem;
+  scroll-margin-block: 4.5rem;
 }

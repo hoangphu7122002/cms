@@ -20,6 +20,7 @@ export interface UIStrings {
     previousPost: string;
     nextPost: string;
     minRead: string;
+    part: string;
     onThisPage: string;
   };
   pagination: {
@@ -36,6 +37,15 @@ export interface UIStrings {
   footer: {
     copyright: string;
     allRightsReserved: string;
+    sourceNote: string;
+    rss: string;
+    navLabel: string;
+  };
+  kinds: {
+    series: string;
+    concept: string;
+    fieldnote: string;
+    method: string;
   };
   pages: {
     tagTitle: string;

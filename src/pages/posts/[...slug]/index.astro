@@ -150,7 +150,7 @@ const ogImage = ogImageUrl
       <TableOfContents
         {headings}
         variant="sidebar"
-        class="sticky top-8 max-h-[calc(100dvh-4rem)] overflow-y-auto"
+        class="sticky top-20 max-h-[calc(100dvh-6rem)] overflow-y-auto"
       />
     </aside>
 
@@ -171,7 +171,7 @@ const ogImage = ogImageUrl
 
     <BackToTopButton />
 
-    <ul class="mt-4 mb-8 flex flex-wrap gap-4 sm:my-8">
+    <ul class="mt-4 mb-8 flex flex-wrap gap-2 sm:my-8">
       {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
     </ul>
 
