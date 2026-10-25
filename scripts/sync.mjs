@@ -45,7 +45,8 @@ for (const src of manifest.sources) {
     const out = join(root, "src/content/posts", src.project);
     if (!dry) {
       mkdirSync(out, { recursive: true });
-      writeFileSync(join(out, name), text.replace(/^status:.*\n/m, `project: ${src.project}\n`));
+      const hasProject = /^project:/m.test(fm.__raw ?? text.split("\n---\n")[0]);
+      writeFileSync(join(out, name), text.replace(/^status:.*\n/m, hasProject ? "" : `project: ${src.project}\n`));
     }
     copied++;
     console.log(`${dry ? "would copy" : "copied"} ${src.project}/${name}`);
