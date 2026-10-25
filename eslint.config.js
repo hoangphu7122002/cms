@@ -18,5 +18,7 @@ export default [
     },
   },
   { rules: { "no-console": "error" } },
+  // CLI scripts (e.g. scripts/sync.mjs) report progress on stdout by design
+  { files: ["scripts/**/*.mjs"], rules: { "no-console": "off" } },
   { ignores: ["dist/**", ".astro/**", "public/pagefind/**"] },
 ];
