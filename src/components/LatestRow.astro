@@ -1,0 +1,116 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { readingMinutes } from "@/utils/readingTime";
+import {
+  findCollection,
+  getCollections,
+  rootShortName,
+} from "@/utils/getCollections";
+import Datetime from "./Datetime.astro";
+import { tplStr, useTranslations } from "@/i18n";
+import config from "@/config";
+
+type Props = {
+  post: CollectionEntry<"posts">;
+  /** Other recent posts of the same collection root, shown inline. */
+  more?: CollectionEntry<"posts">[];
+};
+
+const MAX_MORE = 3;
+
+const { post, more = [] } = Astro.props;
+const { title, description, pubDatetime, modDatetime, timezone } = post.data;
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+const minRead = tplStr(t.post.minRead, { count: readingMinutes(post.body) });
+// getCollection is cached per build, so this stays cheap per row
+const collection = findCollection(
+  post,
+  getCollections(await getCollection("posts"))
+);
+const chip = collection
+  ? [rootShortName(collection), ...collection.path.slice(1)].join(" › ")
+  : "";
+const url = (p: CollectionEntry<"posts">) =>
+  getPostUrl(p.id, p.filePath, locale);
+const shownMore = more.slice(0, MAX_MORE);
+const collectionUrl = collection
+  ? getRelativeLocaleUrl(locale, `collections/${collection.rootSlug}`)
+  : "";
+---
+
+<li
+  class="border-border grid gap-1 border-b py-5 last:border-b-0 sm:grid-cols-[8rem_1fr] sm:gap-6"
+>
+  <Datetime
+    {pubDatetime}
+    {modDatetime}
+    {timezone}
+    showIcon={false}
+    class="font-ui self-start tabular-nums sm:pt-1"
+  />
+  <div class="min-w-0">
+    <h3 class="font-serif text-lg leading-snug font-semibold">
+      <a
+        href={url(post)}
+        class="text-foreground hover:text-accent decoration-accent underline-offset-4 hover:underline"
+      >
+        {title}
+      </a>
+    </h3>
+    {
+      !collection && (
+        <p class="text-muted-foreground mt-1 line-clamp-1">{description}</p>
+      )
+    }
+    <p
+      class="font-ui text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-sm"
+    >
+      {
+        collection && (
+          <>
+            <a
+              href={collectionUrl}
+              class="bg-muted text-foreground hover:text-accent rounded-full px-2.5 py-0.5"
+            >
+              {chip}
+            </a>
+            <span aria-hidden="true">·</span>
+          </>
+        )
+      }
+      <span>{minRead}</span>
+    </p>
+    {
+      shownMore.length > 0 && (
+        <p class="font-ui text-muted-foreground mt-2 text-sm leading-relaxed">
+          <span>{t.home.alsoIn}: </span>
+          {shownMore.map((p, i) => (
+            <>
+              {i > 0 && <span aria-hidden="true"> · </span>}
+              <a
+                href={url(p)}
+                class="text-foreground/85 hover:text-accent decoration-muted-foreground/40 hover:decoration-accent underline underline-offset-4"
+              >
+                {p.data.title}
+              </a>
+            </>
+          ))}
+          {more.length > MAX_MORE && (
+            <>
+              <span aria-hidden="true"> · </span>
+              <a
+                href={collectionUrl}
+                class="hover:text-accent underline-offset-4 hover:underline"
+              >
+                +{more.length - MAX_MORE}
+              </a>
+            </>
+          )}
+        </p>
+      )
+    }
+  </div>
+</li>

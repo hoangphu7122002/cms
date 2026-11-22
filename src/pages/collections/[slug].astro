@@ -1,0 +1,166 @@
+---
+import { type CollectionEntry, getCollection } from "astro:content";
+import Layout from "@/layouts/Layout.astro";
+import Header from "@/components/Header.astro";
+import Breadcrumb from "@/components/Breadcrumb.astro";
+import Footer from "@/components/Footer.astro";
+import CollectionCover from "@/components/CollectionCover.astro";
+import {
+  type CollectionRoot,
+  getCollectionRoots,
+} from "@/utils/getCollections";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { readingMinutes } from "@/utils/readingTime";
+import { slugifyStr } from "@/utils/slugify";
+import { tplStr, useTranslations } from "@/i18n";
+import config from "@/config";
+
+export async function getStaticPaths() {
+  const roots = getCollectionRoots(await getCollection("posts"));
+  return roots.map(root => ({ params: { slug: root.slug }, props: { root } }));
+}
+
+type Props = { root: CollectionRoot };
+
+const { root } = Astro.props;
+const locale = Astro.currentLocale ?? config.site.lang;
+const t = useTranslations(locale);
+const grouped = root.leaves.length > 1;
+const meta = [
+  tplStr(root.count === 1 ? t.home.postCount : t.home.postsCount, {
+    count: root.count,
+  }),
+  grouped
+    ? tplStr(t.home.groupsCount, { count: root.leaves.length })
+    : undefined,
+].filter(Boolean);
+const url = (p: CollectionEntry<"posts">) =>
+  getPostUrl(p.id, p.filePath, locale);
+---
+
+<Layout
+  title={`${root.name} | ${config.site.title}`}
+  description={root.description}
+>
+  <Header />
+  <Breadcrumb current={root.name} />
+  <main
+    id="main-content"
+    data-layout="collection"
+    data-back-url={Astro.url.pathname}
+    class="app-layout pb-8"
+  >
+    <header class="border-border border-b pt-4 pb-10">
+      <h1
+        class="font-serif text-3xl leading-tight font-bold text-balance sm:text-4xl"
+      >
+        {root.name}
+      </h1>
+      {
+        root.description && (
+          <p class="text-foreground/85 mt-3 max-w-[60ch] text-lg leading-relaxed">
+            {root.description}
+          </p>
+        )
+      }
+      <p class="font-ui text-muted-foreground mt-2 text-sm">
+        {meta.join(" · ")}
+      </p>
+      {
+        root.cover && (
+          <div class="mt-6">
+            <CollectionCover path={root.cover} eager />
+          </div>
+        )
+      }
+      {
+        root.start && (
+          <a
+            href={url(root.start)}
+            class="font-ui bg-accent text-accent-foreground mt-6 inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 font-semibold hover:opacity-90"
+          >
+            {t.home.startHere}
+            <span class="sr-only">: {root.start.data.title}</span>
+            <span aria-hidden="true">→</span>
+          </a>
+        )
+      }
+    </header>
+
+    {
+      root.leaves.map(leaf => {
+        const headingId = `group-${slugifyStr(leaf.name)}`;
+        return (
+          <section aria-labelledby={headingId} class="pt-12">
+            <h2 id={headingId} class="text-2xl font-semibold tracking-wide">
+              {leaf.name}
+              <span class="font-ui text-muted-foreground ms-2 text-base font-normal">
+                {tplStr(
+                  leaf.posts.length === 1
+                    ? t.home.postCount
+                    : t.home.postsCount,
+                  { count: leaf.posts.length }
+                )}
+              </span>
+            </h2>
+            <ol class="mt-4">
+              {leaf.posts.map((post, i) => (
+                <li class="border-border flex gap-4 border-b py-5 last:border-b-0">
+                  <span
+                    aria-hidden="true"
+                    class="font-ui text-muted-foreground w-6 flex-none pt-0.5 text-end text-lg tabular-nums"
+                  >
+                    {i + 1}
+                  </span>
+                  <div class="min-w-0">
+                    <h3 class="font-serif text-lg leading-snug font-semibold">
+                      <span class="sr-only">
+                        {tplStr(t.post.part, { n: i + 1 })}:
+                      </span>
+                      <a
+                        href={url(post)}
+                        class="text-foreground hover:text-accent decoration-accent underline-offset-4 hover:underline"
+                      >
+                        {post.data.title}
+                      </a>
+                    </h3>
+                    <p class="text-foreground/85 mt-1.5 leading-relaxed">
+                      {post.data.description}
+                    </p>
+                    <p class="font-ui text-muted-foreground mt-2 flex flex-wrap items-center gap-x-2 text-sm">
+                      {post.id === root.start?.id && (
+                        <>
+                          <span class="bg-muted text-foreground rounded-full px-2.5 py-0.5 font-semibold">
+                            {t.home.startHere}
+                          </span>
+                          <span aria-hidden="true">·</span>
+                        </>
+                      )}
+                      <span>
+                        {tplStr(t.post.minRead, {
+                          count: readingMinutes(post.body),
+                        })}
+                      </span>
+                    </p>
+                  </div>
+                </li>
+              ))}
+            </ol>
+          </section>
+        );
+      })
+    }
+  </main>
+  <Footer />
+</Layout>
+
+<script>
+  document.addEventListener("astro:page-load", () => {
+    const main = document.querySelector<HTMLElement>(
+      "#main-content[data-layout='collection']"
+    );
+    if (main?.dataset.backUrl) {
+      sessionStorage.setItem("backUrl", main.dataset.backUrl);
+    }
+  });
+</script>

@@ -1,0 +1,32 @@
+---
+import { Image } from "astro:assets";
+import { getCover } from "@/utils/getCover";
+
+type Props = {
+  /** Cover path under src/content/posts (a collection's `cover`). */
+  path: string;
+  eager?: boolean;
+  alt?: string;
+};
+
+const { path, eager = false, alt = "" } = Astro.props;
+const image = await getCover(path);
+---
+
+{
+  image && (
+    // figures are drawn on white: keep them on a paper panel, dimmed in dark
+    // like post images (see typography.css)
+    <div class="border-border aspect-video overflow-hidden rounded-lg border bg-white p-2 sm:aspect-[2/1] sm:p-3 dark:brightness-90">
+      <Image
+        src={image}
+        alt={alt}
+        widths={[480, 800, 1200]}
+        sizes="(min-width: 768px) 720px, 100vw"
+        loading={eager ? "eager" : "lazy"}
+        fetchpriority={eager ? "high" : "auto"}
+        class="size-full object-contain"
+      />
+    </div>
+  )
+}

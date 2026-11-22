@@ -1,8 +1,10 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { partOfLabel, type PostCollection } from "@/utils/getCollections";
 import { tplStr, useTranslations } from "@/i18n";
+import config from "@/config";
 
 type Props = {
   post: CollectionEntry<"posts">;
@@ -15,6 +17,10 @@ const t = useTranslations(Astro.currentLocale);
 const position = partOfLabel(post, collection, t);
 const many = collection.posts.length > 1;
 const title = collection.path.join(" › ");
+const pageUrl = getRelativeLocaleUrl(
+  Astro.currentLocale ?? config.site.lang,
+  `collections/${collection.rootSlug}`
+);
 ---
 
 <nav
@@ -75,6 +81,12 @@ const title = collection.path.join(" › ");
             );
           })}
         </ol>
+        <a
+          href={pageUrl}
+          class="text-accent mt-3 inline-block underline-offset-4 hover:underline"
+        >
+          {t.collection.openPage} →
+        </a>
       </details>
     ) : (
       <p>
@@ -85,6 +97,16 @@ const title = collection.path.join(" › ");
           ·{" "}
         </span>
         <span class="text-muted-foreground">{position}</span>
+        <span aria-hidden="true" class="text-muted-foreground">
+          {" "}
+          ·{" "}
+        </span>
+        <a
+          href={pageUrl}
+          class="text-accent underline-offset-4 hover:underline"
+        >
+          {t.collection.openPage}
+        </a>
       </p>
     )
   }

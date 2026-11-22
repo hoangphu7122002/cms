@@ -35,8 +35,11 @@ export default {
     featured: "Featured",
     recentPosts: "Recent Posts",
     allPosts: "All Posts",
-    intro:
-      "Posts are grouped into collections that read in order. Start a collection at part 1, or pick any post below.",
+    startHere: "Start here",
+    seeAll: "See all {{count}} posts",
+    groupCount: "{{count}} group",
+    groupsCount: "{{count}} groups",
+    alsoIn: "Also",
     collections: "Collections",
     latest: "Latest",
     postCount: "{{count}} post",
@@ -47,6 +50,7 @@ export default {
     partOf: "Part {{n}} of {{total}}",
     previous: "Previous in collection",
     next: "Next in collection",
+    openPage: "All posts in this collection",
   },
   footer: {
     copyright: "Copyright",
@@ -70,6 +74,9 @@ export default {
 
     searchTitle: "Search",
     searchDesc: "Search any article ...",
+
+    collectionsTitle: "Collections",
+    collectionsDesc: "Projects written up as posts that read in order.",
   },
   a11y: {
     skipToContent: "Skip to content",
