@@ -1,5 +1,6 @@
 ---
 import { getRelativeLocaleUrl } from "astro:i18n";
+import IconLayoutSidebar from "@/assets/icons/IconLayoutSidebar.svg";
 import IconMenuDeep from "@/assets/icons/IconMenuDeep.svg";
 import IconArchive from "@/assets/icons/IconArchive.svg";
 import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
@@ -47,9 +48,18 @@ const isActive = (path: string) => {
   <div
     class="app-layout relative flex items-baseline justify-between py-1 sm:items-center sm:py-3"
   >
+    <button
+      id="sidebar-open"
+      class="focus-outline absolute -ms-2 p-2.5 sm:static lg:hidden"
+      aria-label={t.a11y.openSidebar}
+      aria-expanded="false"
+      aria-controls="sidebar"
+    >
+      <IconLayoutSidebar class="size-5" />
+    </button>
     <a
       href={getRelativeLocaleUrl(locale, "")}
-      class="absolute py-2.5 text-lg leading-6 font-semibold tracking-tight whitespace-nowrap sm:static sm:my-auto sm:py-1"
+      class="absolute ms-9 py-2.5 text-lg leading-6 font-semibold tracking-tight whitespace-nowrap sm:static sm:my-auto sm:ms-1 sm:py-1 lg:hidden"
     >
       {site.title}
     </a>

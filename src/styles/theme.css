@@ -45,6 +45,7 @@
   --rule: rgb(31 35 40 / 0.14);
   --surface: rgb(31 35 40 / 0.035);
   --surface-strong: rgb(31 35 40 / 0.065);
+  --sidebar: #f4f1ea;
   --callout-key-bg: #edf3fa;
   --callout-key-border: #2463a6;
   --callout-limits-bg: #fbf3e2;
@@ -63,6 +64,7 @@
   --rule: rgb(230 233 239 / 0.16);
   --surface: rgb(230 233 239 / 0.04);
   --surface-strong: rgb(230 233 239 / 0.08);
+  --sidebar: #11151b;
   --callout-key-bg: rgb(108 178 255 / 0.11);
   --callout-key-border: #6cb2ff;
   --callout-limits-bg: rgb(240 185 92 / 0.09);

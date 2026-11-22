@@ -9,6 +9,7 @@ export default {
     about: "About",
     archives: "Archives",
     search: "Search",
+    browse: "Browse",
   },
   post: {
     publishedAt: "Published at",
@@ -88,6 +89,9 @@ export default {
     noResults: "No results found",
     goToPreviousPage: "Go to previous page",
     goToNextPage: "Go to next page",
+    openSidebar: "Open collections",
+    closeSidebar: "Close collections",
+    sidebar: "Collections and posts",
   },
   notFound: {
     title: "404 Not Found",

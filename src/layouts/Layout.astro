@@ -3,6 +3,7 @@ import { ClientRouter } from "astro:transitions";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import { resolveDefaultOgImagePath } from "@/utils/resolveDefaultOgImagePath";
 import { getAssetPath } from "@/utils/withBase";
+import Sidebar from "@/components/Sidebar.astro";
 import config from "@/config";
 import "@/styles/global.css";
 
@@ -115,9 +116,12 @@ const rssHref = getRelativeLocaleUrl(
     <ClientRouter />
   </head>
   <body
-    class="bg-background font-ui text-foreground selection:bg-accent selection:text-accent-foreground flex min-h-svh flex-col"
+    class="bg-background font-ui text-foreground selection:bg-accent selection:text-accent-foreground min-h-svh lg:grid lg:grid-cols-[17.5rem_minmax(0,1fr)]"
   >
-    <slot />
+    <Sidebar />
+    <div class="flex min-h-svh min-w-0 flex-col">
+      <slot />
+    </div>
     <script>
       import "@/scripts/theme";
     </script>

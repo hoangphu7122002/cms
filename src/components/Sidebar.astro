@@ -1,0 +1,239 @@
+---
+import { getCollection } from "astro:content";
+import { getRelativeLocaleUrl } from "astro:i18n";
+import IconSearch from "@/assets/icons/IconSearch.svg";
+import IconX from "@/assets/icons/IconX.svg";
+import { getCollectionRoots } from "@/utils/getCollections";
+import { getPostUrl } from "@/utils/getPostPaths";
+import { useTranslations } from "@/i18n";
+import config from "@/config";
+
+/**
+ * Left column, after knowbie: the site name, a search entry, then every
+ * collection as a small-caps label with its groups. The group holding the
+ * current post (or every group, on that collection's page) opens to list
+ * its posts. At lg and up it is a sticky column; below lg it is a drawer
+ * opened from the header.
+ */
+const { site, features } = config;
+const locale = Astro.currentLocale ?? site.lang;
+const t = useTranslations(locale);
+
+const posts = await getCollection("posts");
+const roots = getCollectionRoots(posts);
+
+const norm = (p: string) => (p.endsWith("/") ? p : `${p}/`);
+const here = norm(Astro.url.pathname);
+const postUrl = (p: (typeof posts)[number]) =>
+  norm(getPostUrl(p.id, p.filePath, locale));
+const rootUrl = (slug: string) =>
+  norm(getRelativeLocaleUrl(locale, `collections/${slug}`));
+
+const browse = [
+  {
+    href: getRelativeLocaleUrl(locale, "collections"),
+    label: t.nav.collections,
+  },
+  { href: getRelativeLocaleUrl(locale, "posts"), label: t.nav.posts },
+  { href: getRelativeLocaleUrl(locale, "tags"), label: t.nav.tags },
+  ...(features.showArchives
+    ? [
+        {
+          href: getRelativeLocaleUrl(locale, "archives"),
+          label: t.nav.archives,
+        },
+      ]
+    : []),
+  { href: getRelativeLocaleUrl(locale, "about"), label: t.nav.about },
+];
+---
+
+<div
+  id="sidebar-backdrop"
+  class="fixed inset-0 z-30 hidden bg-black/40 lg:hidden"
+  aria-hidden="true"
+>
+</div>
+
+<aside
+  id="sidebar"
+  aria-label={t.a11y.sidebar}
+  data-open="false"
+  class="border-border font-ui fixed inset-y-0 start-0 z-40 flex w-[min(18rem,85vw)] -translate-x-full flex-col border-e bg-(--sidebar) transition-transform duration-200 data-[open=true]:translate-x-0 max-lg:invisible max-lg:data-[open=true]:visible lg:sticky lg:top-0 lg:z-auto lg:h-svh lg:w-auto lg:translate-x-0 rtl:translate-x-full"
+>
+  <div class="flex items-start justify-between gap-2 px-5 pt-6">
+    <div>
+      <a
+        href={getRelativeLocaleUrl(locale, "")}
+        class="hover:text-accent font-serif text-xl leading-tight font-bold tracking-tight"
+      >
+        {site.title}
+      </a>
+      <p class="text-muted-foreground mt-1 font-serif text-sm italic">
+        Notes from building systems.
+      </p>
+    </div>
+    <button
+      id="sidebar-close"
+      class="focus-outline -me-2 p-2 lg:hidden"
+      aria-label={t.a11y.closeSidebar}
+    >
+      <IconX class="size-5" />
+    </button>
+  </div>
+
+  {
+    features.search !== false && (
+      <a
+        href={getRelativeLocaleUrl(locale, "search")}
+        class="border-border text-muted-foreground hover:border-accent hover:text-foreground mx-5 mt-5 flex items-center gap-2 rounded-md border bg-(--background) px-3 py-2 text-sm"
+      >
+        <IconSearch class="size-4" aria-hidden="true" />
+        {t.a11y.searchPlaceholder}
+      </a>
+    )
+  }
+
+  <nav class="mt-4 flex-1 overflow-y-auto px-3 pb-6" id="sidebar-scroll">
+    {
+      roots.map(root => {
+        const onRoot = here === rootUrl(root.slug);
+        return (
+          <section class="mt-5 first:mt-2">
+            <a
+              href={rootUrl(root.slug)}
+              aria-current={onRoot ? "page" : undefined}
+              class:list={[
+                "hover:text-accent block px-2 text-xs font-semibold tracking-[0.12em] uppercase",
+                onRoot ? "text-accent" : "text-muted-foreground",
+              ]}
+            >
+              {root.short}
+            </a>
+            <ul class="mt-1.5">
+              {root.leaves.map(leaf => {
+                const open =
+                  onRoot || leaf.posts.some(p => postUrl(p) === here);
+                return (
+                  <li>
+                    <details open={open} class="group/leaf">
+                      <summary class="flex cursor-pointer list-none items-baseline justify-between gap-2 rounded-md px-2 py-1.5 text-[0.95rem] hover:bg-(--surface-strong) [&::-webkit-details-marker]:hidden">
+                        <span class="flex items-baseline gap-1.5">
+                          <span
+                            aria-hidden="true"
+                            class="text-muted-foreground inline-block w-3 text-xs transition-transform group-open/leaf:rotate-90 rtl:-scale-x-100"
+                          >
+                            ›
+                          </span>
+                          {root.leaves.length > 1 ? leaf.name : root.name}
+                        </span>
+                        <span class="text-muted-foreground text-xs tabular-nums">
+                          {leaf.posts.length}
+                        </span>
+                      </summary>
+                      <ol class="border-border ms-3.5 mb-1 border-s ps-2">
+                        {leaf.posts.map(post => {
+                          const active = postUrl(post) === here;
+                          return (
+                            <li>
+                              <a
+                                href={postUrl(post)}
+                                aria-current={active ? "page" : undefined}
+                                data-active={active ? "" : undefined}
+                                class:list={[
+                                  "-ms-[calc(0.5rem+1px)] block border-s-2 py-1 ps-[calc(0.5rem-1px)] pe-2 text-sm leading-snug",
+                                  active
+                                    ? "border-accent text-accent bg-(--surface-strong) font-medium"
+                                    : "text-foreground/80 hover:text-foreground border-transparent",
+                                ]}
+                              >
+                                {post.data.title}
+                              </a>
+                            </li>
+                          );
+                        })}
+                      </ol>
+                    </details>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        );
+      })
+    }
+
+    <section class="mt-6 lg:hidden">
+      <p
+        class="text-muted-foreground px-2 text-xs font-semibold tracking-[0.12em] uppercase"
+      >
+        {t.nav.browse}
+      </p>
+      <ul class="mt-1.5">
+        {
+          browse.map(link => {
+            const active = here.startsWith(norm(link.href));
+            return (
+              <li>
+                <a
+                  href={link.href}
+                  aria-current={active ? "page" : undefined}
+                  class:list={[
+                    "block rounded-md px-2 py-1.5 text-[0.95rem] hover:bg-(--surface-strong)",
+                    { "text-accent font-medium": active },
+                  ]}
+                >
+                  {link.label}
+                </a>
+              </li>
+            );
+          })
+        }
+      </ul>
+    </section>
+  </nav>
+</aside>
+
+<script>
+  function setupSidebar() {
+    const sidebar = document.getElementById("sidebar");
+    const backdrop = document.getElementById("sidebar-backdrop");
+    const openBtn = document.getElementById("sidebar-open");
+    const closeBtn = document.getElementById("sidebar-close");
+    if (!sidebar || !backdrop) return;
+
+    const setOpen = (open: boolean) => {
+      sidebar.dataset.open = String(open);
+      backdrop.classList.toggle("hidden", !open);
+      openBtn?.setAttribute("aria-expanded", String(open));
+      document.documentElement.classList.toggle("max-lg:overflow-hidden", open);
+      if (open) closeBtn?.focus();
+    };
+
+    openBtn?.addEventListener("click", () => setOpen(true));
+    closeBtn?.addEventListener("click", () => {
+      setOpen(false);
+      openBtn?.focus();
+    });
+    backdrop.addEventListener("click", () => setOpen(false));
+    sidebar.addEventListener("keydown", e => {
+      if (e.key === "Escape" && sidebar.dataset.open === "true") {
+        setOpen(false);
+        openBtn?.focus();
+      }
+    });
+
+    // bring the current post into view inside the column
+    const scroller = document.getElementById("sidebar-scroll");
+    const active = sidebar.querySelector<HTMLElement>("[data-active]");
+    if (scroller && active) {
+      const top = active.offsetTop - scroller.offsetTop;
+      if (top > scroller.clientHeight - 80) {
+        scroller.scrollTop = top - scroller.clientHeight / 3;
+      }
+    }
+  }
+
+  setupSidebar();
+  document.addEventListener("astro:after-swap", setupSidebar);
+</script>
