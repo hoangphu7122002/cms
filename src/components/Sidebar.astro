@@ -3,8 +3,6 @@ import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconX from "@/assets/icons/IconX.svg";
-import IconMoon from "@/assets/icons/IconMoon.svg";
-import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import { getCollectionRoots } from "@/utils/getCollections";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { useTranslations } from "@/i18n";
@@ -30,24 +28,6 @@ const postUrl = (p: (typeof posts)[number]) =>
   norm(getPostUrl(p.id, p.filePath, locale));
 const rootUrl = (slug: string) =>
   norm(getRelativeLocaleUrl(locale, `collections/${slug}`));
-
-const browse = [
-  {
-    href: getRelativeLocaleUrl(locale, "collections"),
-    label: t.nav.collections,
-  },
-  { href: getRelativeLocaleUrl(locale, "posts"), label: t.nav.posts },
-  { href: getRelativeLocaleUrl(locale, "tags"), label: t.nav.tags },
-  ...(features.showArchives
-    ? [
-        {
-          href: getRelativeLocaleUrl(locale, "archives"),
-          label: t.nav.archives,
-        },
-      ]
-    : []),
-  { href: getRelativeLocaleUrl(locale, "about"), label: t.nav.about },
-];
 ---
 
 <div
@@ -76,20 +56,6 @@ const browse = [
       </p>
     </div>
     <div class="-me-2 flex items-center">
-      {
-        features.lightAndDarkMode && (
-          <button
-            data-theme-toggle
-            class="focus-outline hover:[&>svg]:stroke-accent relative size-10"
-            title={t.a11y.toggleTheme}
-            aria-label="auto"
-            aria-live="polite"
-          >
-            <IconMoon class="absolute top-1/2 left-1/2 size-5 -translate-1/2 scale-100 transition-all dark:scale-0" />
-            <IconSunHigh class="absolute top-1/2 left-1/2 size-5 -translate-1/2 scale-0 transition-all dark:scale-100" />
-          </button>
-        )
-      }
       <button
         id="sidebar-close"
         class="focus-outline p-2 lg:hidden"
@@ -180,32 +146,6 @@ const browse = [
       })
     }
   </nav>
-  <section class="border-border shrink-0 border-t px-3 pt-3 pb-4">
-    <p class="section-label px-2">
-      {t.nav.browse}
-    </p>
-    <ul class="mt-1.5 grid grid-cols-2 gap-x-2">
-      {
-        browse.map(link => {
-          const active = here.startsWith(norm(link.href));
-          return (
-            <li>
-              <a
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                class:list={[
-                  "block rounded-md px-2 py-1.5 text-[0.95rem] hover:bg-(--surface-strong)",
-                  { "text-accent font-medium": active },
-                ]}
-              >
-                {link.label}
-              </a>
-            </li>
-          );
-        })
-      }
-    </ul>
-  </section>
 </aside>
 
 <script>
