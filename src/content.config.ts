@@ -2,6 +2,7 @@ import { defineCollection } from "astro:content";
 import { z } from "astro/zod";
 import { glob } from "astro/loaders";
 import config from "@/config";
+import { MAX_TAGS, TAG_IDS } from "@/tags";
 
 export const BLOG_PATH = "src/content/posts";
 
@@ -22,7 +23,8 @@ const posts = defineCollection({
       project: z.string().optional(),
       featured: z.boolean().optional(),
       draft: z.boolean().optional(),
-      tags: z.array(z.string()).default(["others"]),
+      // ids from the tag registry (src/tags.ts); unknown ids fail the build
+      tags: z.array(z.enum(TAG_IDS)).min(1).max(MAX_TAGS),
       ogImage: image().or(z.string()).optional(),
       description: z.string(),
       canonicalURL: z.string().optional(),

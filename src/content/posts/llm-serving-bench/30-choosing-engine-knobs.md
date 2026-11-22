@@ -6,7 +6,7 @@ kind: method
 series: methods
 part: 3
 project: llm-serving-bench
-tags: [tuning, chunked-prefill, token-budget, memory-fraction, noise]
+tags: [benchmarking, batching, kv-cache]
 ---
 
 ## Key results

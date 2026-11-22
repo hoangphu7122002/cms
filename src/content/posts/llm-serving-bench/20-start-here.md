@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 0
 project: llm-serving-bench
-tags: [overview, l4, sglang, vllm, capacity]
+tags: [llm-serving, nvidia-l4, sglang, vllm, capacity]
 ---
 
 We serve one language model, Qwen3-4B-Instruct-2507, to a chat, retrieval and code workload on NVIDIA L4 GPUs (24 GB each), and ask how many users one card, two cards and four cards carry before latency limits break. This post gives the answer first, then a map of the rest.

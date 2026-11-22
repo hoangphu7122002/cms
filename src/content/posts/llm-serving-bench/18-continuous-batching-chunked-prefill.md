@@ -6,7 +6,7 @@ kind: concept
 series: concepts
 part: 1
 project: llm-serving-bench
-tags: [continuous-batching, chunked-prefill, ttft, tpot, l4, sglang]
+tags: [batching, latency, nvidia-l4, sglang]
 ---
 
 Eight requests want 10, 80, 20, 40, 10, 30, 20 and 40 answer tokens, and the GPU has 4 slots. If the engine waits for each group of 4 to finish, it needs 120 steps and the slots are busy 52 % of the time. If it refills a slot the moment one finishes, it needs 80 steps and the slots are 78 % busy (both computed, one token per request per step, lengths assumed). That refill rule is **continuous batching**. It creates a new problem, which **chunked prefill** solves and then partly re-creates; we measured both on one L4.

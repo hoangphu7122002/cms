@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 8
 project: llm-serving-bench
-tags: [sglang, l4, memory, kv-cache]
+tags: [sglang, nvidia-l4, kv-cache]
 ---
 
 We put three SGLang processes on one L4 with about 22.5 GiB usable: an embedding model, a vision-language model (VLM) and the LLM. With the LLM at memory fraction 0.75 it crashed at start-up; at 0.60 it started, and its KV pool was too small.

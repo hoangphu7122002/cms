@@ -7,7 +7,7 @@ series: datamate
 part: 11
 project: datamate
 draft: false
-tags: [datamate, lessons, evaluation, abstain, data-layer, table-qa]
+tags: [evaluation, abstention, table-qa]
 ---
 
 Fifteen days, about 53 full public runs, two submissions. Looking back, most of what helped was not clever: clean the data before the model sees it, let the model skip what it is unsure of, and compare runs question by question. This last post lists what I would do again, what I would not, and what I cannot judge until the private score is out.

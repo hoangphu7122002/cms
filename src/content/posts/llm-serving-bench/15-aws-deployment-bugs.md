@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 12
 project: llm-serving-bench
-tags: [aws, lambda, autoscaling, batch]
+tags: [aws, serverless, capacity, batching]
 ---
 
 We tested the front of a serving endpoint (gateway, batch API, scaler) on a fake engine, then ran it against a real L4 pool on Modal (a serverless GPU platform): first from a laptop, then on AWS Lambda. The logic worked; five bugs no fake test had shown came up.

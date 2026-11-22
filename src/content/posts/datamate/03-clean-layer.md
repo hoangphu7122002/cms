@@ -7,7 +7,7 @@ series: datamate
 part: 3
 project: datamate
 draft: false
-tags: [datamate, semantic-layer, table-qa, schema-mapping, diagnostics]
+tags: [table-qa, benchmarking]
 ---
 
 On November 2 my best open model got 25 of 100 questions right, and about 60% of the questions were solved by none of the four models I tried. Before buying a bigger GPU I asked a cheaper question: what if the data were perfect? This post is that diagnostic, what it told me, and why the real version of it, an automatic mapper, became the weak link.

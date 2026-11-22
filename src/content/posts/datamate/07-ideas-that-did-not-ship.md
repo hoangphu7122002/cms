@@ -7,7 +7,7 @@ series: datamate
 part: 7
 project: datamate
 draft: false
-tags: [datamate, negative-results, ablation, evaluation, retrieval, agents]
+tags: [evaluation, retrieval, agents]
 ---
 
 A post-mortem usually lists what worked. This one lists what I built, measured and then left out. Most of these ideas looked good on day one: a shorter prompt, a cheaper check, a simpler pipeline. Then a run on 100 or 1,000 questions gave a number below the control, or inside the noise.

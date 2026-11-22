@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 8
 project: llm-serving-bench
-tags: [gateway, rate-limit, queue, router, slo, autoscaling]
+tags: [routing, latency, capacity]
 ---
 
 A GPU pool answers requests; it does not decide who may ask, in what order, or how many. A public endpoint adds those decisions in front of the pool. Here we list the six parts of our gateway, why each exists, and what each cost or gave in our measurements.

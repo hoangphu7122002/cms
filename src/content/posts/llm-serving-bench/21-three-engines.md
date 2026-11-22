@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 4
 project: llm-serving-bench
-tags: [vllm, sglang, tensorrt-llm, l4, l40s, capacity, slo]
+tags: [vllm, sglang, tensorrt-llm, nvidia-l4, capacity]
 ---
 
 Three open serving engines run the same model, and each ships its own scheduler. We ran vLLM, SGLang and TensorRT-LLM (TRT-LLM, NVIDIA's engine) on the same assistant workload and asked how many users each carries, and where each loses. Only matched setups are compared below; one comparison we could not match is listed in Limits.

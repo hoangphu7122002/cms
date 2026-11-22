@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 7
 project: llm-serving-bench
-tags: [l4, sglang, embedding, vlm, co-location, memory]
+tags: [nvidia-l4, sglang, retrieval, vlm, parallelism]
 ---
 
 A serving fleet runs more than one model: a chat LLM, an embedding model (turns text into vectors for search) and sometimes a vision-language model (VLM). Each could get its own GPU, or share one. Here we show what we measured when they shared one 24 GB L4 with Qwen3-4B-Instruct-2507 FP8 as the LLM.

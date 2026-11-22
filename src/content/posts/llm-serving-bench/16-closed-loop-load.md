@@ -6,7 +6,7 @@ kind: method
 series: methods
 part: 1
 project: llm-serving-bench
-tags: [load-generation, closed-loop, think-time, little-law, capacity]
+tags: [capacity]
 ---
 
 ## Key results

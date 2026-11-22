@@ -6,7 +6,7 @@ kind: concept
 series: concepts
 part: 3
 project: llm-serving-bench
-tags: [quantization, fp8, int4, kv-cache, l4, sglang]
+tags: [quantization, kv-cache, nvidia-l4, sglang]
 ---
 
 Quantization stores numbers in fewer bits. A 4-billion-parameter model has two big memory consumers, the weights and the KV cache (the stored keys and values of earlier tokens), and each can be shrunk on its own. Below we do the bytes arithmetic with round numbers, then show what we measured on one NVIDIA L4 (24 GB) with Qwen3-4B.

@@ -7,7 +7,7 @@ series: datamate
 part: 8
 project: datamate
 draft: false
-tags: [datamate, sft, lora, self-distillation, qwen, training]
+tags: [fine-tuning, qwen]
 ---
 
 By November 14 the base model inside my CodeAct loop scored 0.725 on the public set, and its errors were not random: it wrote code that read the wrong column, guessed when it should have stopped, and ran out of turns on hard questions. I had 3,000 train questions with gold answers and two days. This post is how I turned those into training data, the four kinds of GPU I went through, and what the fine-tuning (SFT) changed.

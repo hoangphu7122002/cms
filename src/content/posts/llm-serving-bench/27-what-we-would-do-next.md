@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 10
 project: llm-serving-bench
-tags: [l4, vllm, scheduling, load-shapes, vlm, offload]
+tags: [nvidia-l4, vllm, capacity, vlm, kv-cache]
 ---
 
 Everything below is a proposal. We have not run any of it. Each item names the number it has to move and why we expect that, so a reader can tell a result from a hope.

@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 3
 project: llm-serving-bench
-tags: [l4, sglang, disaggregation, routing]
+tags: [nvidia-l4, sglang, parallelism, routing]
 ---
 
 We tested whether prefill/decode disaggregation (PD: one GPU reads prompts, another generates tokens) could match simple routing on two L4s. It lost by far: at 520 users, standard attainment was 0.243 for PD against 0.951 for a router that sends long prompts to one replica.

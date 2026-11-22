@@ -7,7 +7,7 @@ series: ott-chat
 part: 1
 project: ott-chat
 draft: false
-tags: [ott-chat, system-design, software-architecture, aws, serverless, microservices, event-driven]
+tags: [system-design, aws, serverless, microservices, event-driven]
 ---
 
 ott-chat is a chat system in the spirit of Zalo: sign up, find friends, make groups, send text, pictures, video, files and voice notes in real time, call one person, ask an AI to translate or summarise. My team of four built it for a university software architecture course over about nine weeks, from the first requirements on 21 September to the report on 21 November 2026. I led the architecture, the codebase, security, availability and latency work. This post is the map: what we had to build, which qualities we ranked first, the shape that followed, and what each big decision bought and cost. The posts after it zoom into one piece each.

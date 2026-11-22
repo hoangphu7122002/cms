@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 5
 project: llm-serving-bench
-tags: [l4, sglang, qwen3-4b, kv-cache, capacity, fp8]
+tags: [nvidia-l4, sglang, kv-cache, capacity, quantization]
 ---
 
 A serving engine reserves its KV pool (the memory that holds the keys and values of every token in flight) once, at start. Here we show how to compute the pool for a 24 GB card before launching, how to turn it into users, and the runs where it ran short.

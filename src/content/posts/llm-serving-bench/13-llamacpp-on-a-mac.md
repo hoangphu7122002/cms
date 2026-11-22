@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 10
 project: llm-serving-bench
-tags: [llama-cpp, apple-silicon, local, baseline]
+tags: [llama-cpp, benchmarking]
 ---
 
 A laptop is the cheapest server we own, so we measured it before renting anything. llama.cpp's `llama-server` on an M1 Pro (16 GB) decoded 29 tokens per second for one request and topped out near 63 for eight.

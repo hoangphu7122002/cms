@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 6
 project: llm-serving-bench
-tags: [l4, sglang, routing, replicas, capacity]
+tags: [nvidia-l4, sglang, routing, parallelism, capacity]
 ---
 
 One L4 serves a fixed number of users. The obvious next step is to add GPUs and put a router in front. Here we show how far that went for Qwen3-4B on 1, 2 and 4 L4s, and which router decided it.
