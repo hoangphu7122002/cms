@@ -14,10 +14,11 @@ const { post, collection, class: className } = Astro.props;
 const t = useTranslations(Astro.currentLocale);
 const position = partOfLabel(post, collection, t);
 const many = collection.posts.length > 1;
+const title = collection.path.join(" › ");
 ---
 
 <nav
-  aria-label={`${t.collection.label}: ${collection.name}`}
+  aria-label={`${t.collection.label}: ${title}`}
   data-pagefind-ignore
   class:list={[
     "border-border font-ui rounded-lg border px-4 py-3 text-sm",
@@ -29,7 +30,7 @@ const many = collection.posts.length > 1;
       <details>
         <summary class="cursor-pointer">
           <span class="text-muted-foreground">{t.collection.label}:</span>{" "}
-          <span class="text-foreground font-semibold">{collection.name}</span>
+          <span class="text-foreground font-semibold">{title}</span>
           <span aria-hidden="true" class="text-muted-foreground">
             {" "}
             ·{" "}
@@ -78,7 +79,7 @@ const many = collection.posts.length > 1;
     ) : (
       <p>
         <span class="text-muted-foreground">{t.collection.label}:</span>{" "}
-        <span class="text-foreground font-semibold">{collection.name}</span>
+        <span class="text-foreground font-semibold">{title}</span>
         <span aria-hidden="true" class="text-muted-foreground">
           {" "}
           ·{" "}

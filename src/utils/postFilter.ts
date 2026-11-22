@@ -14,5 +14,7 @@ export function postFilter({ data }: CollectionEntry<"posts">) {
     Date.now() >
     new Date(data.pubDatetime).getTime() - config.posts.scheduledPostMargin;
   const showDrafts = import.meta.env.DEV && process.env.SHOW_DRAFTS === "true";
-  return (showDrafts || !data.draft) && (import.meta.env.DEV || isPublishTimePassed);
+  return (
+    (showDrafts || !data.draft) && (import.meta.env.DEV || isPublishTimePassed)
+  );
 }
