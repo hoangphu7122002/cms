@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 5
 project: llm-serving-bench
-tags: [admission-control, router, sglang, l4]
+tags: [routing, sglang, nvidia-l4]
 ---
 
 We put a cap on requests in flight at the router of a 4 x L4 deployment, expecting the admitted requests to stay fast past the capacity limit. At 1,500 users standard attainment fell from 0.838 to 0.751, so we dropped the idea.

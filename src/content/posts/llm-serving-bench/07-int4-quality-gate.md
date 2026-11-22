@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 4
 project: llm-serving-bench
-tags: [l4, int4, fp8, quantisation, quality]
+tags: [nvidia-l4, quantization]
 ---
 
 On one L4, a quality gate told us FP8 "passed" against a bf16 reference that had mostly crashed: 353 of 400 tasks failed with out-of-memory (OOM). Rescored with a working reference, FP8 sat within noise of bf16 and INT4 weights did not.

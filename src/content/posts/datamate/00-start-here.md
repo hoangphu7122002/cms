@@ -7,7 +7,7 @@ series: datamate
 part: 0
 project: datamate
 draft: false
-tags: [datamate, table-qa, vietnamese, agents, codeact, sft, zalo-ai-challenge, overview]
+tags: [table-qa, vietnamese, agents, fine-tuning, llm-serving]
 ---
 
 DataMate asks a model to answer casual Vietnamese questions about the messy books of small shops. In 15 days my system went from -0.487 to 0.942 on the 1,000 public questions, and most of the climb came from the data layer and the harness, not the weights. This post is the whole story on one page, then a map of the other posts.

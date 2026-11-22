@@ -6,7 +6,7 @@ kind: concept
 series: concepts
 part: 2
 project: llm-serving-bench
-tags: [prefix-cache, radix-attention, vllm, sglang, routing, l4]
+tags: [kv-cache, vllm, sglang, routing, nvidia-l4]
 ---
 
 Two requests that start with the same 1,000-token system prompt should not both pay to prefill it. Prefix caching keeps the KV of earlier tokens and reuses it when a new prompt begins with the same tokens. Below we compute what each engine's design saves on a round example, then look at what the hit rates we measured on one NVIDIA L4 did and did not buy.

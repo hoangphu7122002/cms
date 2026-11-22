@@ -7,7 +7,7 @@ series: datamate
 part: 13
 project: datamate
 draft: false
-tags: [datamate, architecture, codeact, table-qa, module-design, abstain]
+tags: [system-design, agents, table-qa, ddd, abstention]
 ---
 
 [Part 12](/posts/datamate/12-whole-system-architecture/) drew the whole system on one page. This part opens each box: what a

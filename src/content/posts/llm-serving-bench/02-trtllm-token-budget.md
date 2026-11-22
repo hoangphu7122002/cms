@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 4
 project: llm-serving-bench
-tags: [tensorrt-llm, l4, l40s, token-budget]
+tags: [tensorrt-llm, nvidia-l4, nvidia-l40s, batching]
 ---
 
 On one L40S, TensorRT-LLM (TRT-LLM, NVIDIA's serving engine) met our standard latency target for 0.001 of requests at 1,350 users, where vLLM and SGLang scored 0.985 and 0.982. The cause was one flag we had copied from vLLM: a per-step token budget of 256.

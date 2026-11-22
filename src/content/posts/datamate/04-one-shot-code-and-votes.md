@@ -7,7 +7,7 @@ series: datamate
 part: 4
 project: datamate
 draft: false
-tags: [datamate, code-generation, lora, sft, self-consistency, abstain]
+tags: [agents, fine-tuning, self-consistency, abstention]
 ---
 
 After the data fixes of Part 2, my solver was simple: put the rulebook, a card describing the shop and the question into one prompt, let the model write one pandas program, run it, answer. I trained the model for this, then wrapped it in a repair step and a vote. It reached PA 0.496. This post is about how far that went, and the one thing it could never do: look at the data before it commits.

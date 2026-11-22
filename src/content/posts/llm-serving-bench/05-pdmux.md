@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 2
 project: llm-serving-bench
-tags: [sglang, pdmux, l4]
+tags: [sglang, batching, nvidia-l4]
 ---
 
 We wanted to know whether splitting one GPU between prefill and decode would cut the latency misses of our chat workload. SGLang 0.5.20 has a flag for it, `--enable-pdmux`. We never got a number out of it.

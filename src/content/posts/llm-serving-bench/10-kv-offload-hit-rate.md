@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 7
 project: llm-serving-bench
-tags: [vllm, l4, kv-offload, prefix-cache]
+tags: [vllm, nvidia-l4, kv-cache]
 ---
 
 We turned on vLLM's native KV offload to host RAM on one L4. The prefix hit rate rose by 11.5 and 12.7 points at two loads, and the latency target did not move beyond noise.

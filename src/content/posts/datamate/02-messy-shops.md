@@ -7,7 +7,7 @@ series: datamate
 part: 2
 project: datamate
 draft: false
-tags: [datamate, data-cleaning, loader, excel, abstain, baselines]
+tags: [table-qa, abstention, benchmarking]
 ---
 
 When I restarted on November 5, I gave a 9B model the raw tables, the whole rulebook and the question, and let it write pandas. It lost points on every run. The model was not bad at pandas; it was doing two jobs at once, reading broken files and answering questions, and it was bad at the first one. This post is about the files, and what changed when code took that job away.

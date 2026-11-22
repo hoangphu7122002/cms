@@ -7,7 +7,7 @@ series: datamate
 part: 12
 project: datamate
 draft: false
-tags: [datamate, architecture, codeact, table-qa, vllm, lora, abstain]
+tags: [system-design, agents, table-qa, fine-tuning, abstention]
 ---
 
 The other parts zoom in on one piece each. This part puts them back together: the system I submitted (image "n6")

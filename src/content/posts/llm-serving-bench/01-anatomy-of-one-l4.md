@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 3
 project: llm-serving-bench
-tags: [l4, sglang, qwen3-4b, kv-cache, capacity, fp8]
+tags: [nvidia-l4, sglang, kv-cache, capacity, quantization]
 ---
 
 One NVIDIA L4 is the unit of this series: cost per user is its hourly price divided by its users. Here we show what the card holds when SGLang serves Qwen3-4B-Instruct-2507, and how many users it carries.

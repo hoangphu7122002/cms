@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 1
 project: llm-serving-bench
-tags: [l4, l40s, capacity-model, sglang, vllm]
+tags: [nvidia-l4, nvidia-l40s, capacity, sglang, vllm]
 ---
 
 Before measuring, we predicted from datasheet numbers that one L4 serving Qwen3-4B (FP8 weights and KV cache) holds 5,301 users at the standard latency tier. Our engines held about 260 (SGLang) and 320 (vLLM).

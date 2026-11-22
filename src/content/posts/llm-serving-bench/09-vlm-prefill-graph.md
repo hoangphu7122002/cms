@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 6
 project: llm-serving-bench
-tags: [l4, sglang, vllm, vlm, cuda-graph, prefill]
+tags: [nvidia-l4, sglang, vllm, vlm, latency]
 ---
 
 We swapped the text model for its vision-language sibling (VLM, a model that also reads images) on one L4, expecting a small cost for the extra weights. On text-only requests, SGLang's standard attainment fell from 0.906 to 0.664. Decode was unchanged; prefill was not.

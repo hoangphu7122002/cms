@@ -7,7 +7,7 @@ series: datamate
 part: 5
 project: datamate
 draft: false
-tags: [datamate, agents, react, codeact, tool-calling, vote, qwen3.5]
+tags: [agents, self-consistency, qwen]
 ---
 
 One-shot code commits before it looks. In Part 4 the model wrote one pandas program, I ran it, and whatever came out was the answer: 0.476 with a vote. The next step was to let the model run code, read the output, and then decide. It took three loops, and the first one made things worse.

@@ -6,7 +6,7 @@ kind: method
 series: methods
 part: 2
 project: llm-serving-bench
-tags: [slo, capacity, methodology]
+tags: [latency, capacity, benchmarking]
 ---
 
 "How many users does this server carry" has no answer until we fix what counts as served. We fixed it as the share of requests that meet their latency targets, and we call a user count the capacity when that share stays at 0.90 or above.

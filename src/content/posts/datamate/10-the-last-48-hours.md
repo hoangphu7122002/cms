@@ -7,7 +7,7 @@ series: datamate
 part: 10
 project: datamate
 draft: false
-tags: [datamate, evaluation, paired-test, harness, overfitting, field-notes]
+tags: [evaluation, benchmarking, fine-tuning]
 ---
 
 The third training epoch finished at 00:14 on November 16, and I froze the weights. Everything after that was the harness: the code around the model that reads shops, parses questions, runs the loop and checks answers. In the last day I built six versions, n1 to n6, ran each on all 1,000 public questions, and submitted two of them. This is the log of that day, including the step that went down.

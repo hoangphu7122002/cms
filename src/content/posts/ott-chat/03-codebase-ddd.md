@@ -7,7 +7,7 @@ series: ott-chat
 part: 3
 project: ott-chat
 draft: false
-tags: [ott-chat, architecture, ddd, clean-architecture, monorepo, typescript, modularity, connascence]
+tags: [system-design, ddd, typescript]
 ---
 
 The earlier parts looked at ott-chat from the outside: what a Zalo-like messenger needs, and how it runs on AWS. This

@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 9
 project: llm-serving-bench
-tags: [serverless, modal, l4, cold-start]
+tags: [serverless, modal, nvidia-l4, latency]
 ---
 
 We ran our L4 benchmarks on a serverless GPU platform (Modal) to pay only while a run was alive. A sleeping laptop, preemption, a default timeout and cold starts each cost us time or money.

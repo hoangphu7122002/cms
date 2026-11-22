@@ -7,7 +7,7 @@ series: datamate
 part: 9
 project: datamate
 draft: false
-tags: [datamate, inference, vllm, docker, determinism, voting]
+tags: [llm-serving, vllm, modal, benchmarking, self-consistency]
 ---
 
 The organisers do not call an API: they load my Docker image on their machine with no network, mount the data read-only, and give it 6 hours. Whatever is in `submission.jsonl` at the end is scored. So the inference system had two jobs: answer well, and never leave the file broken. This post walks one question through that system, then the time budget and the run-to-run noise I could not remove.

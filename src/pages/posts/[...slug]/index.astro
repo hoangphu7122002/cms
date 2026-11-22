@@ -7,7 +7,6 @@ import Datetime from "@/components/Datetime.astro";
 import Tag from "@/components/Tag.astro";
 import { getPostSlug, getPostUrl } from "@/utils/getPostPaths";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { slugifyStr } from "@/utils/slugify";
 import { toTransitionName } from "@/utils/toTransitionName";
 import EditPost from "./_components/EditPost.astro";
 import ShareLinks from "./_components/ShareLinks.astro";
@@ -23,6 +22,7 @@ import {
   type PostCollection,
 } from "@/utils/getCollections";
 import { readingMinutes } from "@/utils/readingTime";
+import { tagName } from "@/utils/getUniqueTags";
 import { tplStr, useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -187,7 +187,7 @@ const ogImage = ogImageUrl
     <BackToTopButton />
 
     <ul class="mt-4 mb-8 flex flex-wrap gap-x-2 sm:my-8 sm:gap-y-2">
-      {tags.map(tag => <Tag tag={slugifyStr(tag)} tagName={tag} size="sm" />)}
+      {tags.map(tag => <Tag {tag} tagName={tagName(tag)} size="sm" />)}
     </ul>
 
     <ShareLinks />

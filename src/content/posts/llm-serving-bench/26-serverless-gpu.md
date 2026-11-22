@@ -6,7 +6,7 @@ kind: series
 series: series
 part: 9
 project: llm-serving-bench
-tags: [serverless, modal, l4, cold-start, autoscaling, cost]
+tags: [serverless, modal, nvidia-l4, latency, cost]
 ---
 
 A serverless GPU platform bills per second of container time and starts containers on demand. We ran our serving stack on one (Modal, L4 cards) and asked what that buys over a fixed fleet, and what it costs in latency.

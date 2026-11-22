@@ -6,7 +6,7 @@ kind: concept
 series: concepts
 part: 4
 project: llm-serving-bench
-tags: [routing, head-of-line, sglang, l4]
+tags: [routing, sglang, nvidia-l4]
 ---
 
 On an empty L4, the prefill of one 4,000 to 8,000-token prompt took 1 to 1.4 s (measured), and in that time the GPU served nothing else. Every short request that arrives in that second waits. Length-aware routing keeps the long prompts on their own replica so the short ones never queue behind them. Below: a worked example, then what it gave us on L4s, and where it did nothing.

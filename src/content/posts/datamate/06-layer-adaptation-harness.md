@@ -7,7 +7,7 @@ series: datamate
 part: 6
 project: datamate
 draft: false
-tags: [datamate, table-qa, data-layer, schema-mapping, agents, generalisation]
+tags: [table-qa, agents, fine-tuning]
 ---
 
 Every DataMate shop writes its books differently. One calls the order code `Mã HĐ`, another `so_phieu`; one marks cancelled orders "huỷ", another keeps status in a separate sheet. A solver that rediscovers this for every question spends its turns on plumbing. My answer, the layer adaptation harness, is a thin adapter per shop, built mostly by code, that turns each folder of files into the same small set of clean tables.

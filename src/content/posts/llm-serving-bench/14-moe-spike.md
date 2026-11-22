@@ -6,7 +6,7 @@ kind: fieldnote
 series: field notes
 part: 11
 project: llm-serving-bench
-tags: [moe, l4, sglang, tensor-parallel]
+tags: [moe, nvidia-l4, sglang, parallelism]
 ---
 
 A mixture-of-experts (MoE) model activates only a few experts per token, so a 30B model can decode like a 3B one. We tried Qwen3-30B-A3B in FP8 on two 24 GB L4s: a single stream was twice as fast as our 4B dense model, but the first capacity level, 160 users, already failed.

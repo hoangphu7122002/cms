@@ -7,7 +7,7 @@ series: datamate
 part: 1
 project: datamate
 draft: false
-tags: [datamate, table-qa, vietnamese, agents, codeact, sft, zalo-ai-challenge]
+tags: [table-qa, vietnamese, agents, fine-tuning]
 ---
 
 Small Vietnamese shops keep their books in whatever file is at hand: a CSV, an Excel workbook with one sheet per month, a SQLite file. The DataMate track asks a model to answer casual Vietnamese questions about those files, such as "how much did we sell last week, not counting cancelled orders?". My first full run on November 2 scored -0.487. My final run on November 16 scored 0.942. This post is the map of that climb; the posts after it zoom into each step.

@@ -6,7 +6,7 @@ kind: concept
 series: concepts
 part: 1
 project: llm-serving-bench
-tags: [kv-cache, paged-attention, prefix-cache, offload, l4, sglang, vllm]
+tags: [kv-cache, nvidia-l4, sglang, vllm]
 ---
 
 Take one chat request of 2,100 tokens (2,004 prompt, 96 answer) served by Qwen3-4B on one NVIDIA L4, a 24 GB GPU. By the end of its answer the GPU holds about 155 MB (148 MiB) of cached keys and values for it, with an FP8 cache. Below we derive that number, show the layout, and test a bigger cache.

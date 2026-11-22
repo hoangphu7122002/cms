@@ -23,9 +23,17 @@ import {
   rehypeTableScroll,
 } from "./src/utils/rehype/readingBlocks";
 import config from "./astro-paper.config";
+import { TAG_ALIASES } from "./src/tags";
 
 export default defineConfig({
   site: config.site.url,
+  // old tag names (merged into the registry) keep working
+  redirects: Object.fromEntries(
+    Object.entries(TAG_ALIASES).map(([alias, id]) => [
+      `/tags/${alias}/`,
+      `/tags/${id}/`,
+    ])
+  ),
   integrations: [
     mdx(),
     sitemap({

@@ -10,7 +10,6 @@ import Footer from "@/components/Footer.astro";
 import Pagination from "@/components/Pagination.astro";
 import { getUniqueTags } from "@/utils/getUniqueTags";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { slugifyAll } from "@/utils/slugify";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -18,20 +17,20 @@ export async function getStaticPaths({ paginate }: GetStaticPathsOptions) {
   const posts = await getCollection("posts", ({ data }) => !data.draft);
   const tags = getUniqueTags(posts);
 
-  return tags.flatMap(({ tag, tagName }) => {
+  return tags.flatMap(({ tag, tagName, description }) => {
     const tagPosts = getSortedPosts(
-      posts.filter(({ data }) => slugifyAll(data.tags).includes(tag))
+      posts.filter(({ data }) => data.tags.includes(tag))
     );
 
     return paginate(tagPosts, {
       params: { tag },
-      props: { tagName },
+      props: { tagName, description },
       pageSize: config.posts.perPage,
     });
   });
 }
 
-const { page, tagName } = Astro.props;
+const { page, tagName, description } = Astro.props;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
@@ -42,10 +41,7 @@ const t = useTranslations(locale);
 
   <Breadcrumb />
 
-  <Main
-    pageTitle={`${t.pages.tagTitle}: ${tagName}`}
-    pageDesc={`${t.pages.tagDesc} "${tagName}".`}
-  >
+  <Main pageTitle={tagName} pageDesc={description}>
     <ul>
       {page.data.map(data => <Card {...data} />)}
     </ul>
