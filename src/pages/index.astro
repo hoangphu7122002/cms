@@ -11,7 +11,7 @@ import Card from "@/components/Card.astro";
 import CollectionCard from "@/components/CollectionCard.astro";
 import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { getCollectionRoots } from "@/utils/getCollections";
+import { collectionOf, getCollectionRoots } from "@/utils/getCollections";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
@@ -24,7 +24,23 @@ const t = useTranslations(locale);
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-const latestPosts = sortedPosts.slice(0, LATEST_COUNT);
+// one entry per collection root, so a burst of series posts takes one slot
+type Entry = { post: (typeof sortedPosts)[number]; more: typeof sortedPosts };
+const entries = new Map<string, Entry>();
+for (const post of sortedPosts) {
+  const key = collectionOf(post)?.rootKey ?? `post:${post.id}`;
+  const entry = entries.get(key);
+  if (entry) {
+    // the part-0 "Start here" post leads its group when it is in the batch
+    if (post.data.part === 0) {
+      entry.more.unshift(entry.post);
+      entry.post = post;
+    } else entry.more.push(post);
+  } else if (entries.size < LATEST_COUNT) {
+    entries.set(key, { post, more: [] });
+  }
+}
+const latestPosts = [...entries.values()];
 const collections = getCollectionRoots(posts);
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
@@ -123,8 +139,8 @@ const homePath = getRelativeLocaleUrl(locale, "");
             {t.home.latest}
           </h2>
           <ul>
-            {latestPosts.map(data => (
-              <Card variant="h3" {...data} />
+            {latestPosts.map(({ post, more }) => (
+              <Card variant="h3" {...post} more={more} />
             ))}
           </ul>
         </section>

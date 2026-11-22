@@ -15,11 +15,21 @@ import { tplStr, useTranslations } from "@/i18n";
 
 type Props = {
   variant?: "h2" | "h3";
+  /** Other posts of the same collection, shown as one line under the card. */
+  more?: CollectionEntry<"posts">[];
 } & CollectionEntry<"posts">;
 
 const MAX_TAGS = 3;
+const MAX_MORE = 3;
 
-const { variant: Heading = "h2", id, data, filePath, body } = Astro.props;
+const {
+  variant: Heading = "h2",
+  more = [],
+  id,
+  data,
+  filePath,
+  body,
+} = Astro.props;
 
 const { title, description, tags, pubDatetime, modDatetime, timezone } = data;
 const t = useTranslations(Astro.currentLocale);
@@ -29,9 +39,18 @@ const collection = findCollection(
   Astro.props,
   getCollections(await getCollection("posts"))
 );
-const partLabel = collection
-  ? tplStr(t.post.part, { n: positionIn(Astro.props, collection) })
+const grouped = more.length > 0;
+const partLabel = !collection
+  ? ""
+  : grouped
+    ? tplStr(t.home.postsCount, { count: more.length + 1 })
+    : tplStr(t.post.part, { n: positionIn(Astro.props, collection) });
+const collectionLabel = collection
+  ? grouped
+    ? collection.rootName
+    : collection.path.join(" › ")
   : "";
+const shownMore = more.slice(0, MAX_MORE);
 const shownTags = tags.slice(0, MAX_TAGS);
 ---
 
@@ -41,7 +60,7 @@ const shownTags = tags.slice(0, MAX_TAGS);
   {
     collection && (
       <p class="font-ui text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-xs tracking-wider uppercase">
-        <span>{collection.path.join(" › ")}</span>
+        <span>{collectionLabel}</span>
         <span aria-hidden="true">·</span>
         <span>{partLabel}</span>
       </p>
@@ -88,4 +107,23 @@ const shownTags = tags.slice(0, MAX_TAGS);
       )
     }
   </div>
+  {
+    shownMore.length > 0 && (
+      <p class="font-ui text-muted-foreground relative z-10 mt-3 text-sm">
+        <span>+ </span>
+        {shownMore.map((p, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true"> · </span>}
+            <a
+              href={getPostUrl(p.id, p.filePath, Astro.currentLocale)}
+              class="hover:text-accent decoration-accent underline underline-offset-4"
+            >
+              {p.data.title}
+            </a>
+          </>
+        ))}
+        {more.length > MAX_MORE && <span> · +{more.length - MAX_MORE}</span>}
+      </p>
+    )
+  }
 </li>
