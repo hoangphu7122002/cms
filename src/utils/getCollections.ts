@@ -18,9 +18,10 @@ export type PostCollection = {
   name: string;
   /** Names from the root down to this leaf, e.g. ["LLM serving", "How we measure"]. */
   path: string[];
-  /** Key and name of the root this leaf belongs to. */
+  /** Key, name and page slug of the root this leaf belongs to. */
   rootKey: string;
   rootName: string;
+  rootSlug: string;
   /** Sort key of the leaf inside its root, in tree order. */
   order: string;
   /** Published posts in reading order (`part`, then date). */
@@ -77,6 +78,7 @@ type Place = {
   path: string[];
   rootKey: string;
   rootName: string;
+  rootSlug: string;
   /** Tree order of the leaf inside its root ("" when not from the tree). */
   order: string;
 };
@@ -99,6 +101,7 @@ export function collectionOf(post: Post): Place | undefined {
       path,
       rootKey: `tree:${slugifyStr(rootName)}`,
       rootName,
+      rootSlug: hits[0].node.slug ?? slugifyStr(rootName),
       order: hits
         .slice(1)
         .map(h => String(h.index).padStart(3, "0"))
@@ -112,6 +115,7 @@ export function collectionOf(post: Post): Place | undefined {
     path: [name],
     rootKey: key,
     rootName: name,
+    rootSlug: slugifyStr(name),
     order: "",
   });
   const own = collection?.trim() || series?.trim();
@@ -146,6 +150,7 @@ export function getCollections(posts: Post[]): PostCollection[] {
       path: g.path,
       rootKey: g.rootKey,
       rootName: g.rootName,
+      rootSlug: g.rootSlug,
       order: g.order,
       posts: [...g.posts].sort(byPart),
     }))
@@ -161,6 +166,13 @@ function latest(list: Post[]): number {
 export type CollectionRoot = {
   key: string;
   name: string;
+  /** URL segment of the collection page, /collections/<slug>/. */
+  slug: string;
+  /** Short name for chips; the name when the tree gives none. */
+  short: string;
+  description?: string;
+  /** Cover image path under src/content/posts (see getCover). */
+  cover?: string;
   /** Leaves in tree order; one leaf when the root has no children. */
   leaves: PostCollection[];
   /** A part-0 post ("Start here"), shown first on the card. */
@@ -173,9 +185,14 @@ export function getCollectionRoots(posts: Post[]): CollectionRoot[] {
   const leaves = getCollections(posts);
   const roots = new Map<string, CollectionRoot>();
   for (const leaf of leaves) {
+    const node = rootNode(leaf.rootKey);
     const root = roots.get(leaf.rootKey) ?? {
       key: leaf.rootKey,
       name: leaf.rootName,
+      slug: leaf.rootSlug,
+      short: node?.short ?? leaf.rootName,
+      description: node?.description,
+      cover: node?.cover,
       leaves: [],
       count: 0,
     };
@@ -192,6 +209,18 @@ export function getCollectionRoots(posts: Post[]): CollectionRoot[] {
       latest(b.leaves.flatMap(l => l.posts)) -
       latest(a.leaves.flatMap(l => l.posts))
   );
+}
+
+/** The tree root behind a root key, when the root comes from the tree. */
+function rootNode(rootKey: string): CollectionNode | undefined {
+  return COLLECTION_TREE.find(
+    n => n.match && `tree:${slugifyStr(n.name)}` === rootKey
+  );
+}
+
+/** Short root name for a leaf: "DataMate", else the root's name. */
+export function rootShortName(collection: PostCollection): string {
+  return rootNode(collection.rootKey)?.short ?? collection.rootName;
 }
 
 /** The collection holding this post, or undefined. */

@@ -33,7 +33,11 @@ export interface UIStrings {
     featured: string;
     recentPosts: string;
     allPosts: string;
-    intro: string;
+    startHere: string;
+    seeAll: string;
+    groupCount: string;
+    groupsCount: string;
+    alsoIn: string;
     collections: string;
     latest: string;
     postCount: string;
@@ -44,6 +48,7 @@ export interface UIStrings {
     partOf: string;
     previous: string;
     next: string;
+    openPage: string;
   };
   footer: {
     copyright: string;
@@ -67,6 +72,9 @@ export interface UIStrings {
 
     searchTitle: string;
     searchDesc: string;
+
+    collectionsTitle: string;
+    collectionsDesc: string;
   };
   a11y: {
     skipToContent: string;

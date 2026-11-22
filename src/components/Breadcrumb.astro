@@ -4,6 +4,12 @@ import { stripBase, stripLocale } from "@/utils/withBase";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
+type Props = {
+  /** Label for the last crumb instead of its URL segment. */
+  current?: string;
+};
+
+const { current } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
 
@@ -30,6 +36,7 @@ const navLabels: Record<string, string> = {
   about: t.nav.about,
   archives: t.nav.archives,
   search: t.nav.search,
+  collections: t.pages.collectionsTitle,
 };
 
 // if breadcrumb is Home > Posts > [page] <etc>
@@ -72,11 +79,14 @@ if (breadcrumbList[0] === "tags" && !isNaN(Number(breadcrumbList[2]))) {
         index + 1 === breadcrumbList.length ? (
           <li>
             <span
-              class:list={["capitalize opacity-75", { lowercase: index > 0 }]}
+              class:list={[
+                "opacity-75",
+                { capitalize: !current, lowercase: !current && index > 0 },
+              ]}
               aria-current="page"
             >
               {/* make the last part lowercase in Home > Tags > some-tag */}
-              {navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
+              {current ?? navLabels[breadcrumb] ?? decodeSegment(breadcrumb)}
             </span>
           </li>
         ) : (
