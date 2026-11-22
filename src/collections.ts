@@ -68,6 +68,9 @@ export const COLLECTION_TREE: CollectionNode[] = [
     name: "ott-chat: a chat system on AWS",
     slug: "ott-chat",
     short: "ott-chat",
+    description:
+      "A Zalo-like chat built by a team of four for a Software Architecture course: system design, DDD codebase, and AWS with HA, security and scale.",
+    cover: "ott-chat/figures/aws-arch.png",
     match: { project: "ott-chat" },
     children: [
       { name: "System design", match: { parts: [0, 6] } },

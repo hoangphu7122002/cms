@@ -142,7 +142,7 @@ const browse = [
                           >
                             ›
                           </span>
-                          {root.leaves.length > 1 ? leaf.name : root.name}
+                          {leaf.path.length > 1 ? leaf.name : root.name}
                         </span>
                         <span class="text-muted-foreground text-xs tabular-nums">
                           {leaf.posts.length}
@@ -179,34 +179,33 @@ const browse = [
         );
       })
     }
-
-    <section class="mt-6">
-      <p class="section-label px-2">
-        {t.nav.browse}
-      </p>
-      <ul class="mt-1.5">
-        {
-          browse.map(link => {
-            const active = here.startsWith(norm(link.href));
-            return (
-              <li>
-                <a
-                  href={link.href}
-                  aria-current={active ? "page" : undefined}
-                  class:list={[
-                    "block rounded-md px-2 py-1.5 text-[0.95rem] hover:bg-(--surface-strong)",
-                    { "text-accent font-medium": active },
-                  ]}
-                >
-                  {link.label}
-                </a>
-              </li>
-            );
-          })
-        }
-      </ul>
-    </section>
   </nav>
+  <section class="border-border shrink-0 border-t px-3 pt-3 pb-4">
+    <p class="section-label px-2">
+      {t.nav.browse}
+    </p>
+    <ul class="mt-1.5 grid grid-cols-2 gap-x-2">
+      {
+        browse.map(link => {
+          const active = here.startsWith(norm(link.href));
+          return (
+            <li>
+              <a
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                class:list={[
+                  "block rounded-md px-2 py-1.5 text-[0.95rem] hover:bg-(--surface-strong)",
+                  { "text-accent font-medium": active },
+                ]}
+              >
+                {link.label}
+              </a>
+            </li>
+          );
+        })
+      }
+    </ul>
+  </section>
 </aside>
 
 <script>
