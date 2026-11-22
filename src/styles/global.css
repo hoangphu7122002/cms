@@ -30,6 +30,16 @@
   @apply max-w-app mx-auto w-full px-4;
 }
 
+/* one title style for every page: home, lists, collections, posts */
+@utility page-title {
+  @apply font-serif text-3xl leading-tight font-bold tracking-tight text-balance sm:text-4xl;
+}
+
+/* small-caps group label, same in the sidebar and in page sections */
+@utility section-label {
+  @apply font-ui text-muted-foreground text-xs font-semibold tracking-[0.12em] uppercase;
+}
+
 @utility active-nav {
   @apply border-accent border-b-2;
 }

@@ -136,7 +136,7 @@ const ogImage = ogImageUrl
   >
     <h1
       style={{ viewTransitionName: toTransitionName(post.id) }}
-      class="text-accent inline-block font-serif text-2xl leading-tight font-bold sm:text-3xl"
+      class="page-title"
     >
       {title}
     </h1>
@@ -157,7 +157,7 @@ const ogImage = ogImageUrl
       <EditPost {hideEditPost} {post} class="max-sm:hidden" />
     </div>
 
-    {collection && <CollectionNav {post} {collection} class="mt-6" />}
+    {collection && <CollectionNav {post} {collection} class="mt-6 lg:hidden" />}
 
     <TableOfContents {headings} variant="inline" class="mt-6 2xl:hidden" />
 

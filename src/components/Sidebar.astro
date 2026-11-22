@@ -3,6 +3,8 @@ import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import IconSearch from "@/assets/icons/IconSearch.svg";
 import IconX from "@/assets/icons/IconX.svg";
+import IconMoon from "@/assets/icons/IconMoon.svg";
+import IconSunHigh from "@/assets/icons/IconSunHigh.svg";
 import { getCollectionRoots } from "@/utils/getCollections";
 import { getPostUrl } from "@/utils/getPostPaths";
 import { useTranslations } from "@/i18n";
@@ -73,13 +75,29 @@ const browse = [
         Notes from building systems.
       </p>
     </div>
-    <button
-      id="sidebar-close"
-      class="focus-outline -me-2 p-2 lg:hidden"
-      aria-label={t.a11y.closeSidebar}
-    >
-      <IconX class="size-5" />
-    </button>
+    <div class="-me-2 flex items-center">
+      {
+        features.lightAndDarkMode && (
+          <button
+            data-theme-toggle
+            class="focus-outline hover:[&>svg]:stroke-accent relative size-10"
+            title={t.a11y.toggleTheme}
+            aria-label="auto"
+            aria-live="polite"
+          >
+            <IconMoon class="absolute top-1/2 left-1/2 size-5 -translate-1/2 scale-100 transition-all dark:scale-0" />
+            <IconSunHigh class="absolute top-1/2 left-1/2 size-5 -translate-1/2 scale-0 transition-all dark:scale-100" />
+          </button>
+        )
+      }
+      <button
+        id="sidebar-close"
+        class="focus-outline p-2 lg:hidden"
+        aria-label={t.a11y.closeSidebar}
+      >
+        <IconX class="size-5" />
+      </button>
+    </div>
   </div>
 
   {
@@ -104,16 +122,15 @@ const browse = [
               href={rootUrl(root.slug)}
               aria-current={onRoot ? "page" : undefined}
               class:list={[
-                "hover:text-accent block px-2 text-xs font-semibold tracking-[0.12em] uppercase",
-                onRoot ? "text-accent" : "text-muted-foreground",
+                "section-label hover:text-accent block px-2",
+                { "text-accent": onRoot },
               ]}
             >
               {root.short}
             </a>
             <ul class="mt-1.5">
               {root.leaves.map(leaf => {
-                const open =
-                  onRoot || leaf.posts.some(p => postUrl(p) === here);
+                const open = leaf.posts.some(p => postUrl(p) === here);
                 return (
                   <li>
                     <details open={open} class="group/leaf">
@@ -163,10 +180,8 @@ const browse = [
       })
     }
 
-    <section class="mt-6 lg:hidden">
-      <p
-        class="text-muted-foreground px-2 text-xs font-semibold tracking-[0.12em] uppercase"
-      >
+    <section class="mt-6">
+      <p class="section-label px-2">
         {t.nav.browse}
       </p>
       <ul class="mt-1.5">

@@ -51,14 +51,12 @@ const url = (p: CollectionEntry<"posts">) =>
     class="app-layout pb-8"
   >
     <header class="border-border border-b pt-4 pb-10">
-      <h1
-        class="font-serif text-3xl leading-tight font-bold text-balance sm:text-4xl"
-      >
+      <h1 class="page-title">
         {root.name}
       </h1>
       {
         root.description && (
-          <p class="text-foreground/85 mt-3 max-w-[60ch] text-lg leading-relaxed">
+          <p class="text-muted-foreground mt-3 max-w-[60ch] font-serif text-lg leading-relaxed italic">
             {root.description}
           </p>
         )
@@ -92,9 +90,13 @@ const url = (p: CollectionEntry<"posts">) =>
         const headingId = `group-${slugifyStr(leaf.name)}`;
         return (
           <section aria-labelledby={headingId} class="pt-12">
-            <h2 id={headingId} class="text-2xl font-semibold tracking-wide">
+            <h2
+              id={headingId}
+              class="section-label border-border border-b pb-2"
+            >
               {leaf.name}
-              <span class="font-ui text-muted-foreground ms-2 text-base font-normal">
+              <span class="ms-1 font-normal tracking-normal normal-case">
+                ·{" "}
                 {tplStr(
                   leaf.posts.length === 1
                     ? t.home.postCount
