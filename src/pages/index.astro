@@ -1,7 +1,6 @@
 ---
 import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
-import IconRss from "@/assets/icons/IconRss.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
@@ -34,23 +33,9 @@ const homePath = getRelativeLocaleUrl(locale, "");
     class="app-layout my-1"
   >
     <section id="hero" class="pt-8 pb-4">
-      <h1 class="page-title mt-4 mb-4 inline-block sm:mt-8">
+      <h1 class="page-title mt-4 mb-4 sm:mt-8">
         Lessons from building systems
       </h1>
-      <a
-        target="_blank"
-        href={`${import.meta.env.BASE_URL.replace(/\/?$/, "/")}rss.xml`}
-        class="inline-block align-middle max-sm:-my-3 max-sm:p-3"
-        aria-label="RSS Feed"
-        title="RSS Feed"
-      >
-        <IconRss
-          width={20}
-          height={20}
-          class="stroke-accent scale-125 stroke-3 rtl:-rotate-90"
-        />
-        <span class="sr-only">RSS Feed</span>
-      </a>
 
       <p
         class="text-muted-foreground max-w-[60ch] font-serif text-lg leading-relaxed italic"
