@@ -41,7 +41,7 @@ const shownTags = tags.slice(0, MAX_TAGS);
   {
     collection && (
       <p class="font-ui text-muted-foreground flex flex-wrap items-center gap-x-2 gap-y-1 text-xs tracking-wider uppercase">
-        <span>{collection.name}</span>
+        <span>{collection.path.join(" › ")}</span>
         <span aria-hidden="true">·</span>
         <span>{partLabel}</span>
       </p>
