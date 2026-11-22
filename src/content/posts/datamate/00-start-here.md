@@ -27,6 +27,16 @@ PA on the 1,000 public questions, scored with my own labels (about 99% accurate 
 
 ![PA on 1,000 public questions for 22 runs from Nov 2 to Nov 16, in six stages: layer and catalogue (-0.487, 0.168, 0.330), restart with raw prompt (-0.415, 0.171, 0.289), trained one-shot code (0.403, 0.476), CodeAct loop (0.346, 0.579, 0.635, 0.725), SFT (0.767, 0.798, 0.804), harness batches (ep3 on the new harness 0.869, up to 0.942, with a dip to 0.907 at n3).](./figures/01_pa_ladder.png)
 
+*The PA ladder: every stage of the climb, one run per point.*
+
+## The system at a glance
+
+The whole system fits in one picture: offline training on train shops only, then four online layers that share one model.
+
+![Left, offline and train-only: 2,546 student rollouts and 1,484 teacher repairs become 4,030 rows from 24 train shops, then LoRA SFT on 2x H200 and a merge into bf16 weights. Right, online inside the Docker image: four layers (shop, question, CodeAct solver with at most 10 turns and 2 to 5 samples, answer), each with a code part on CPU and a model part on GPU served by two vLLM copies of the same merged Qwen3.5-9B; the output file starts as all abstains.](./figures/12_arch_overview.png)
+
+*The architecture: blue boxes call the one 9B model, grey boxes are deterministic code.*
+
 ## 1. The project
 
 Each question comes with a shop folder, an `as_of_date`, a shared rulebook and a calendar. Train has 30 shops and 3,000 questions with answers; public has 14 shops and 1,000 questions; the private test has about 500 questions from new shop types. The files hold duplicated order lines, total rows, money like "1tr2" and mixed date formats. The rules: at most 15B parameters, an offline Docker image, 6 hours on two RTX 5090 cards, no test data in training, and an organiser re-run within 0.03 of my score.
@@ -41,13 +51,37 @@ Can a 9B model read messy shop files well enough to beat skipping everything, an
 
 **One shot, then a loop.** A LoRA-trained one-shot coder (code3) scored 0.403, and 0.476 with a vote of three. It wrote the whole program before seeing a row. A ReAct harness (one named tool per turn) on the untrained base model showed that a 9B model can run a loop when the data arrives clean; I ported pieces of it. My first CodeAct loop (ca1, fine-tuned) scored 0.346: it printed the right period, then ignored it. With native tool calls and clean views, the untrained base model scored 0.579, then 0.635 with loop fixes, then 0.725 with a vote of three and abstain on weak agreement.
 
+The figure puts the three loops side by side, with the score each one reached.
+
+![Three loops side by side: one-shot code scored 0.403 single and 0.476 with a vote; a teammate's ReAct harness reported 0.566 single and 0.638 with a vote of 3, on their own labels and not comparable; my CodeAct loop went from 0.579 to 0.725 with fixes and a vote.](./figures/05_three_loops.png)
+
+*One-shot code, ReAct and CodeAct. The ReAct numbers use a teammate's own labels and are not comparable.*
+
 **The layer adaptation harness.** The solver stays generic; each shop gets an adapter built mostly by code. A loader cleans the files, a code draft gives each table one of 8 types and each column one of 15 roles, checks test the draft on the data, and a failing table is dropped, never the shop. The result is clean views (`sales_lines`, `orders`, ...) with rules like `counts_as_revenue` applied once. The draft matched my hand mappings on 385 of 396 roles. Turning views off dropped the solver from 0.579 to 0.173.
 
+The harness runs per shop once, then per question, and hands the solver the same view names for every shop.
+
+![The layer adaptation harness in three rows. Per shop: loader, profile, code draft with 8 table types and 15 roles, optional LLM fix, checks, one repair turn, a gate that fails open, then views and cards. Per question: normaliser, time window, entities, question analysis, rule subset. Per answer: CodeAct solver over views. An LLM view writer covers unmapped tables with 3 tries.](./figures/06_harness_arch.png)
+
+*The layer adaptation harness: code first, the model only where code has no answer.*
+
 **Train on its own correct answers.** From train shops only I built 4,030 rows: 2,546 of the base model's rollouts that reached gold, and 1,484 teacher repairs of its failures, by Claude Haiku 5.5 (low reasoning) and DeepSeek 4.1 Flash. LoRA SFT on 2x H200 lifted the vote from 0.725 to 0.798. A third epoch (ep3, 0.804) is the model I shipped.
+
+The training path ran across several platforms before the final runs on 2x H200.
+
+![Training timeline by platform. Nov 6-12: a pandas QLoRA on Kaggle 2x T4, one-shot code runs, and the CodeAct ca_v1 run on a Modal H100 that scored 0.346. Nov 14-16: student rollouts and teacher repairs, v1d on 2x L40S (216 steps, 8.4 h, vote 0.767), b64 on 2x H200 (vote 0.798), then ep3, shipped.](./figures/08_training_timeline.png)
+
+*From free GPUs to the shipped ep3 model, with the public PA of each trained model.*
 
 ## 3. The system in one paragraph
 
 One merged Qwen3.5-9B does every model step, one vLLM server per GPU. A shop is read once into views; a question gets code for text, time window and names, plus one analysis call; a CodeAct loop runs Python in a persistent kernel for at most 10 turns; an adaptive vote draws 2 to 5 samples; code rules turn weak answers into abstains; a formatter writes the official shape. Of 19 steps, 5 call the model, about 10.2 calls per question (n2 traces). The model may propose; code decides. The output file starts as 1,000 abstains, so a crash costs only unfinished questions.
+
+The figure follows one question through those steps, including every path to an abstain.
+
+![Request flow: shop files are read once into clean views; each question gets text normalisation, time and entity parsing and one analysis call, then a CodeAct loop of at most 10 turns with a Python kernel (one process per sample, at most 32 at once, 30 s per cell), an adaptive vote of 2 to 5 samples (mean 2.40 in the b64 run), checks and a formatter, then submission.jsonl; any crash or timeout exits to abstain, which scores 0.](./figures/09_request_flow.png)
+
+*One question end to end. Blue steps call the model; crashes, time-outs and weak votes become abstains.*
 
 ## 4. What the numbers say
 

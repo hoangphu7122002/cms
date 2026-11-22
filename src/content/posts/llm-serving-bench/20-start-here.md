@@ -29,6 +29,20 @@ Per card (computed): 640 / 2 = 320 and 1,200 / 4 = 300 users, above the 225 of o
 
 *Users that passed the standard tier. The first bar uses a 30 s think time and is not comparable with the others.*
 
+## The system at a glance
+
+Each setup is one or more L4 cards, each running its own replica of the model, and the figure shows what one card holds.
+
+![Stacked bars of L4 memory in GiB: bf16 weights 7.71 and KV cache 7.18; FP8 weights 4.30 and KV cache 13.74.](./figures/01_memory_split.png)
+
+*One L4 (about 22.5 GiB usable): FP8 weights free room for a KV pool of 200,084 tokens, against 52,311 in bf16.*
+
+With several cards, a router sends long prompts to their own replica so short ones do not wait behind them.
+
+![Two timelines: on one GPU ten short prefills start after a 1.0 s long prefill, mean first token 1.275 s; with two GPUs the shorts finish with mean 0.275 s.](./figures/29_hol_example.png)
+
+*Why length-aware routing helps, with hypothetical round numbers: the long prefill no longer blocks the short ones.*
+
 ## 1. The project
 
 An LLM server is a GPU, a serving engine (SGLang, vLLM or TensorRT-LLM) and settings. We keep the model and the workload fixed and change the rest. The unit is the L4 because its cost per hour is small and its memory is tight: 24 GB holds 4.30 GB of FP8 weights and a KV cache of 200,084 tokens (measured).
@@ -37,6 +51,12 @@ An LLM server is a GPU, a serving engine (SGLang, vLLM or TensorRT-LLM) and sett
 
 How many users does a setup carry while 0.90 of requests meet the latency limits, and what does each user cost? A user is a closed loop: send a turn, wait, think, send again, so we report users, with the think time beside them. We also test the strict tier (TTFT 0.5 s, TPOT 30 ms), which no L4 setup of the text model passed at 0.90 in any closed-loop user run.
 
+Capacity is read off a curve: step users up and take the highest level still at or above the 0.90 line.
+
+![SLO attainment against users. Left, bf16, synthetic load, 30 s think time: standard 0.966 at 16 users, 0.699 at 17. Right, FP8, assistant mix: standard 0.906 at 225 users, 0.886 at 260; strict never reaches 0.90.](./figures/01_slo_vs_users.png)
+
+*Attainment per tier on one L4, for the first baseline (left) and the final workload (right).*
+
 ## 3. What the numbers say
 
 - The first baseline carried 16 users; the final single card about 225. Weights (bf16 to FP8) and workload (30 s to 351.5 s think time) both changed, so the comparison is not like for like. Our reading is that the workload explains most of it: a Little's-law estimate puts the bf16 setup at about 201 users on the final workload (computed, not measured).
@@ -44,6 +64,18 @@ How many users does a setup carry while 0.90 of requests meet the latency limits
 - Two and four cards scale to about 300 to 320 users per card with a router that sends long prompts to their own replica. Splitting prefill and decode across cards scored lower than two replicas behind that router: 0.617 against 0.951 at 520 users on two cards (one seed each).
 - A 30B mixture-of-experts model split across two L4s failed the standard tier at its first level, 160 users (0.669). The 4B model held 640 on the same two cards, but as two replicas behind a router, so the layouts differ.
 - Our paper capacity model said 5,301 users for one L4; we measured about 260 to 320, 17 to 20 times lower.
+
+Behind the router, two and four cards hold the line to 640 and 1,200 users.
+
+![Line chart of standard attainment against users: 2 x L4 length-aware holds 0.951 at 520 users and 0.882 at 800; 4 x L4 with 2 long and 2 short holds 0.956 at 800 and 0.925 at 1,200, then falls to 0.838 at 1,500.](./figures/23_scaling_out.png)
+
+*Scaling out: round robin, length-aware routing on two cards, and two layouts on four cards.*
+
+The paper capacity model lost most of its users once prefill and queueing were added.
+
+![Horizontal log-scale bars of standard-tier users on one L4: 5,301 from the paper model, 3,918 with two calibrated numbers, 897 when prefill alone fills the GPU, 159 with queueing, against 260 to 320 measured.](./figures/04_paper_vs_measured.png)
+
+*The 17x gap: each bar adds one effect the paper model left out (log scale).*
 
 ## 4. Reader's map
 
