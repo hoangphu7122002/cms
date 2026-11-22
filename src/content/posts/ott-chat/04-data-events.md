@@ -66,11 +66,8 @@ Chat publishes `MessageSent` straight to SNS after the commit. If that publish f
 > **In plain words: the dual write problem**
 > Saving a row and telling other services are two writes to two systems. If the save works and the message fails, nobody hears about it. The outbox puts a "notice" row in the same database transaction as the change: both happen or neither does. A separate relay posts the notices later, and keeps trying until it succeeds.
 
-```text
-  one transaction            relay (after write, hourly/minute net)
-  UPDATE profiles ...   ──►  SELECT unsent FOR UPDATE SKIP LOCKED
-  INSERT INTO outbox         publish to SNS, mark sent
-```
+![A service Lambda updates a row and inserts an outbox notice in one Postgres transaction, then wakes the outbox relay; an EventBridge schedule also wakes the relay as a safety net; the relay takes unsent rows with FOR UPDATE SKIP LOCKED, publishes each to SNS and marks it sent](./figures/aws-outbox-wake.png)
+*The outbox: one transaction, then a relay that wakes after the write, with a schedule as the safety net.*
 
 How the relay wakes cost us real quota. A one-minute poll kept chat's Neon database awake and burned its 100 free compute-hours in 17 days (D-145), so chat's relay is now woken after each write and polls hourly. Identity's relay still polled each minute, and a block waited a median 59.4 s to reach chat. Waking it after each write cut that to 0.4 s (D-165).
 

@@ -36,11 +36,8 @@ This part covers three things at three levels of done. One-to-one calls were dep
 ![One-to-one call: both browsers ask the chat Lambda for ICE servers (public STUN, and Cloudflare TURN whose key is read from Parameter Store); call frames travel over the WebSocket API to chat-ws, which caches routes for 10 seconds and uses DynamoDB for sockets and the first-answer claim, and relays them to the other browser; media goes peer to peer; the caller writes one call-log message to Neon.](./figures/aws-calls.png)
 *Our servers see signalling only; the media never touches AWS.*
 
-```text
- A ── ① signalling: offer, answer, candidates ──► chat WebSocket ──► B
- A ◄═════════ ② media: audio and video, peer to peer ══════════════► B
- A ◄═════ ③ TURN relay, only when the direct path is blocked ══════► B
-```
+![Signalling frames go from browser A through the WebSocket API and the chat-ws Lambda to browser B; audio and video go peer to peer between the browsers; a Cloudflare TURN server relays media only when the direct path is blocked](./figures/aws-call-paths.png)
+*Three paths: signalling through AWS, media peer to peer, TURN only as a fallback.*
 
 A call has three parts, and they behave very differently. **Signalling** is a few small JSON frames, and the chat WebSocket already did that job. Chat-ws relays call frames only between the two members of a direct chat and stores nothing (D-153). A 10-second route cache avoids a database read per frame. If two devices of the callee both answer, one conditional write in DynamoDB lets the first one win (D-157). **Media** flows between the two browsers and never touches our servers. The call ends with one system message, written once by the caller, so the log shows up in the thread like any other message.
 

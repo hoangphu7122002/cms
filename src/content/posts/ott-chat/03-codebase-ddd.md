@@ -37,29 +37,13 @@ Chat is the core and the largest: it owns conversations, members, messages, reac
 ![Folder layers of one service: entrypoints at the top, inbound and outbound adapters below, application with use cases and ports, domain at the bottom, all inside a private internal/ folder; contract/ and tests/ outside; black arrows are allowed imports, red dashed arrows marked 1 to 5 are forbidden](./figures/ddd-service-layers.png)
 *One service's folders. Black arrows are allowed; red ones fail the build.*
 
-```text
-services/chat/
-├─ contract/        PUBLIC: api/ types, events/ schemas
-├─ internal/        PRIVATE
-│  ├─ domain/       rules and values, no I/O
-│  ├─ application/  one use case per file, plus ports.ts
-│  ├─ adapters/     inbound/ (http, ws, sqs) · outbound/ (store, events, media, ai)
-│  └─ entrypoints/  one composition root per Lambda
-├─ db/migrations/   this service's own SQL
-└─ tests/           unit (fakes) · integration (real Postgres)
-```
-
 The use case declares the ports it needs in `ports.ts`, "never beside their implementations" (D-62). An adapter plugs into a port. The entrypoint builds the database pool and the AWS clients once per Lambda container and wires them in. Two shared packages sit outside: `kernel` (pure: `Result`, errors, ids) and `platform` (HTTP kit, JWT, Postgres, logger), which only adapters and entrypoints may import.
 
 > **In plain words: inbound vs outbound adapter**
 > The difference is who calls whom. An inbound adapter is the waiter taking orders: HTTP, a socket or a queue calls in, and the adapter turns the raw request into a use-case call. An outbound adapter is the person sent to market: the use case says "store this message" through a port, and the adapter does it with Postgres, SNS or S3. A queue consumer is inbound (SQS pushes to us); the SNS publisher is outbound (we push out).
 
-```text
-INBOUND   http/handlers.ts ──calls──► sendMessage()      adapter knows the use case
-OUTBOUND  sendMessage() ──calls──► ports.messages.send()  use case knows only the port
-                                         ▲ implements
-                                  store/message-repository.ts
-```
+![API Gateway calls http/handlers.ts, the inbound adapter, which calls sendMessage() in the application; sendMessage calls ports.messages.send(), a port in application/ports.ts; message-repository.ts in the outbound adapter implements that port and INSERTs into Neon](./figures/aws-ports.png)
+*The inbound adapter knows the use case; the use case knows only the port.*
 
 ## 3. One send, through the layers
 
@@ -103,17 +87,8 @@ The rules failed silently twice. Once, excluding `node_modules` hid every edge t
 
 ## 6. Adding a consumer: Terraform, code, deploy
 
-```text
-1 Terraform  event-bus.tf: + realtime = { environment, extra policy }   10 lines
-             └► queue, DLQ, alarm, role, log group, placeholder Lambda, trigger
-2 Code       services/realtime/: domain, application (use case + ports),
-             inbound/sqs/translate.ts, outbound (DynamoDB, socket post),
-             entrypoints/sqs/main.ts + lambda.ts, tests
-3 Local      LocalStack init: add "realtime" to the queue list
-4 Deploy     deploy-service.sh realtime dev sqs
-             └► bundle, publish version, move `live` alias, smoke test,
-                watch the errors alarm 10 min; failure moves the alias back
-```
+![Four steps: 1 Terraform adds about 10 lines to event-bus.tf and creates the queue with DLQ, alarm, log group, role and a placeholder Lambda; 2 code in services/realtime; 3 LocalStack init adds the queue; 4 deploy-service.sh bundles, publishes a version, moves the live alias, smoke tests and watches the errors alarm for 10 minutes, moving the alias back on failure](./figures/aws-add-consumer.png)
+*Adding the realtime consumer: infrastructure first, code second, deploy with an automatic rollback.*
 
 **Terraform first.** The event-bus module builds everything per key of a `consumers` map, so the realtime consumer was a 10-line entry. Terraform creates the function with a placeholder zip and never deploys code; CI owns code (D-70).
 
