@@ -7,6 +7,7 @@ export interface UIStrings {
     about: string;
     archives: string;
     search: string;
+    browse: string;
   };
   post: {
     publishedAt: string;
@@ -86,6 +87,9 @@ export interface UIStrings {
     noResults: string;
     goToPreviousPage: string;
     goToNextPage: string;
+    openSidebar: string;
+    closeSidebar: string;
+    sidebar: string;
   };
   notFound: {
     title: string;
