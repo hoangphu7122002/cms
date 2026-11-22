@@ -1,53 +1,86 @@
 ---
+import type { CollectionEntry } from "astro:content";
 import { getPostUrl } from "@/utils/getPostPaths";
-import type { PostCollection } from "@/utils/getCollections";
+import type { CollectionRoot } from "@/utils/getCollections";
 import { tplStr, useTranslations } from "@/i18n";
 
-type Props = { collection: PostCollection };
+type Props = { root: CollectionRoot };
 
-const MAX_SHOWN = 5;
-
-const { collection } = Astro.props;
+const { root } = Astro.props;
 const t = useTranslations(Astro.currentLocale);
-const count = collection.posts.length;
-const countLabel = tplStr(count === 1 ? t.home.postCount : t.home.postsCount, {
-  count,
+const countLabel = tplStr(
+  root.count === 1 ? t.home.postCount : t.home.postsCount,
+  { count: root.count }
+);
+// one leaf: show 5 posts like a plain series; several: 3 per group
+const grouped = root.leaves.length > 1;
+const maxShown = grouped ? 3 : 5;
+const url = (p: CollectionEntry<"posts">) =>
+  getPostUrl(p.id, p.filePath, Astro.currentLocale);
+const groups = root.leaves.map(leaf => {
+  const posts = leaf.posts.filter(p => p.id !== root.start?.id);
+  return {
+    leaf,
+    posts,
+    shown: posts.slice(0, maxShown),
+    hidden: Math.max(0, posts.length - maxShown),
+  };
 });
-const shown = collection.posts.slice(0, MAX_SHOWN);
 ---
 
 <li class="border-border flex flex-col rounded-lg border p-4">
   <h3 class="text-foreground font-serif text-lg leading-snug font-semibold">
-    {collection.name}
+    {root.name}
   </h3>
   <p class="font-ui text-muted-foreground text-sm">{countLabel}</p>
 
-  <ol class="font-ui mt-3 space-y-1.5 text-sm max-sm:mt-1 max-sm:space-y-0">
-    {
-      shown.map((post, i) => (
-        <li class="flex items-baseline gap-2">
-          <span
-            aria-hidden="true"
-            class="text-muted-foreground w-6 flex-none text-end tabular-nums"
-          >
-            {i + 1}
-          </span>
-          <span class="sr-only">{tplStr(t.post.part, { n: i + 1 })}:</span>
-          <a
-            href={getPostUrl(post.id, post.filePath, Astro.currentLocale)}
-            class="text-foreground hover:text-accent decoration-accent underline underline-offset-4 max-sm:inline-block max-sm:py-3"
-          >
-            {post.data.title}
-          </a>
-        </li>
-      ))
-    }
-  </ol>
   {
-    count > MAX_SHOWN && (
-      <p class="font-ui text-muted-foreground ms-8 mt-2 text-sm">
-        +{count - MAX_SHOWN}
-      </p>
+    root.start && (
+      <a
+        href={url(root.start)}
+        class="font-ui bg-muted text-foreground hover:text-accent mt-3 block rounded-md px-3 py-2 text-sm font-semibold"
+      >
+        → {root.start.data.title}
+      </a>
     )
+  }
+
+  {
+    groups.map(g => (
+      <div class="mt-3">
+        {grouped && (
+          <h4 class="font-ui text-muted-foreground text-xs font-semibold tracking-wide uppercase">
+            {g.leaf.name}
+          </h4>
+        )}
+        <ol class="font-ui mt-1.5 space-y-1.5 text-sm max-sm:space-y-0">
+          {g.shown.map(post => {
+            const n = g.leaf.posts.indexOf(post) + 1;
+            return (
+              <li class="flex items-baseline gap-2">
+                <span
+                  aria-hidden="true"
+                  class="text-muted-foreground w-6 flex-none text-end tabular-nums"
+                >
+                  {n}
+                </span>
+                <span class="sr-only">{tplStr(t.post.part, { n })}:</span>
+                <a
+                  href={url(post)}
+                  class="text-foreground hover:text-accent decoration-accent underline underline-offset-4 max-sm:inline-block max-sm:py-3"
+                >
+                  {post.data.title}
+                </a>
+              </li>
+            );
+          })}
+        </ol>
+        {g.hidden > 0 && (
+          <p class="font-ui text-muted-foreground ms-8 mt-1 text-sm">
+            +{g.hidden}
+          </p>
+        )}
+      </div>
+    ))
   }
 </li>
