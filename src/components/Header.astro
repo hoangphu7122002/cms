@@ -75,6 +75,15 @@ const isActive = (path: string) => {
       >
         <li class="col-span-2">
           <a
+            href={getRelativeLocaleUrl(locale, "collections")}
+            class:list={{ "active-nav": isActive("/collections") }}
+            aria-current={isActive("/collections") ? "page" : undefined}
+          >
+            {t.nav.collections}
+          </a>
+        </li>
+        <li class="col-span-2">
+          <a
             href={getRelativeLocaleUrl(locale, "posts")}
             class:list={{ "active-nav": isActive("/posts") }}
             aria-current={isActive("/posts") ? "page" : undefined}
