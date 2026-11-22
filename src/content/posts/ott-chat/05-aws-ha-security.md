@@ -90,10 +90,10 @@ We then added a copy of the data in Sydney, kept fresh daily. What we did not bu
 ![Terraform layout: config supplies names, the ott- prefix and the SSM path to live/dev, which calls 11 modules (service, http-api, frontend, media, websocket-api, event-bus, scheduled-function, keepalive, backup, dr-restore, replica-bucket); bootstrap holds the state bucket and OIDC role and is applied once by hand. A box counts 145 resources, 17 Lambdas on nodejs22.x arm64 behind a live alias.](./figures/aws-terraform.png)
 *The Terraform modules behind live/dev. The Sydney root is separate.*
 
-```text
-terraform/live/dev     ap-southeast-1  state in a Singapore bucket  (the running stack)
-terraform/live/dev-dr  ap-southeast-2  state in a Sydney bucket     (replica buckets only)
-```
+| Root | Region | State bucket | Holds |
+|---|---|---|---|
+| `terraform/live/dev` | ap-southeast-1 | Singapore | the running stack |
+| `terraform/live/dev-dr` | ap-southeast-2 | Sydney | replica buckets only |
 
 Why a stack at all: a recovery region needs hundreds of resources, and nobody types those by hand during an outage. Why a second root: if Singapore is down, so is the state of `live/dev`, and you cannot plan or apply. `live/dev-dr` keeps its state in Sydney, and a failed apply there cannot touch the live stack.
 

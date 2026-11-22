@@ -35,11 +35,8 @@ Three requirements shaped the send path more than any feature. Order comes from 
 > **In plain words: "sent" means stored, not delivered**
 > When you press send, the server writes the message, gives it the next `seq` and answers "sent". Delivery to other screens comes after and may fail. That is fine: a phone that missed something asks "everything after 41, please" when it reconnects. Store for sure, deliver best effort, repair by `seq` (D-07, D-48).
 
-```text
-send ──► INSERT, seq 42 ──► "sent" ✓
-              └──► fan-out ──► other screens (best effort)
-reconnect ──► sync after seq 41 ──► message 42 arrives
-```
+![Phone A sends to the chat Lambda, which INSERTs the message into Neon with seq 42 and answers sent; chat publishes MessageSent to SNS and the realtime Lambda pushes it to other screens, which may fail; a screen that missed it later asks chat for everything after seq 41 and gets message 42](./figures/aws-seq-repair.png)
+*Store for sure, deliver best effort, repair by seq.*
 
 ## 2. What we ranked first
 

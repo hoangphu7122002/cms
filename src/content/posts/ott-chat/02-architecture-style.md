@@ -22,14 +22,11 @@ tags: [system-design, microservices, serverless, event-driven, aws]
 
 ## 1. Three ways to cut the system
 
-```text
-B   8 services, ~15 functions   one function per job, one queue per consumer
-C   4 units,     6 functions    cut by "user waits" vs "nobody waits";
-                                one worker runs all four consumers
-C′  core few and large          identity, chat, media
-    edge many and small         notification, analytics, moderation,
-                                each with its own queue and dead-letter queue
-```
+| Option | Size | How it cuts |
+|---|---|---|
+| B | 8 services, ~15 functions | one function per job, one queue per consumer |
+| C | 4 units, 6 functions | "user waits" vs "nobody waits"; one worker runs all four consumers |
+| C′ | core few and large, edge many and small | core: identity, chat, media; edge: notification, analytics, moderation, each with its own queue and dead-letter queue |
 
 **Problem.** The course rewards distributed designs. A team of four had nine weeks. Too many services and we drown in infrastructure; too few and "microservices" is a word on a slide.
 
@@ -39,15 +36,8 @@ C′  core few and large          identity, chat, media
 
 ## 2. What real chat systems do
 
-```text
-   CORE: few, large                     EDGE: many, small
-   ┌──────────┐ ┌──────────────┐         ┌──────────────┐
-   │ identity │ │ chat         │ ─events─►│ notification │
-   └──────────┘ │ groups,      │         │ analytics    │  one queue
-                │ members,     │         │ moderation   │  + one DLQ
-                │ messages     │         │ realtime ... │  each
-                └──────────────┘         └──────────────┘
-```
+![Core on the left: identity, chat and media Lambdas; chat and identity publish events to SNS topics; on the right the edge: notification, analytics, moderation and realtime, each behind its own SQS queue with a dead-letter queue](./figures/aws-core-edge.png)
+*Core few and large, edge many and small. Each edge consumer has its own queue and DLQ.*
 
 I asked what large systems actually do. The answer I got: chat products such as WhatsApp, Slack and Discord keep the message path in a few big services, with many small ones around it for search, push, analytics and abuse. Ours follows the same pattern. That gave a reason better than "to have eight services": the core shares rules about order and permission, so it stays together; the edge fails in separate ways, so it is split.
 
