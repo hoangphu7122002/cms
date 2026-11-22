@@ -41,53 +41,66 @@ const groups = root.leaves.map(leaf => {
 <li
   class="border-border flex flex-col rounded-xl border bg-(--surface) p-5 sm:p-6"
 >
-  {
-    root.cover && (
-      <a href={pageUrl} tabindex="-1" aria-hidden="true" class="mb-5 block">
-        <CollectionCover path={root.cover} {eager} />
-      </a>
-    )
-  }
-
-  <Heading class="font-serif text-xl leading-snug font-semibold sm:text-2xl">
-    <a
-      href={pageUrl}
-      class="text-foreground hover:text-accent decoration-accent hover:underline hover:underline-offset-4"
-    >
-      {root.name}
-    </a>
-  </Heading>
-  {
-    root.description && (
-      <p class="text-foreground/85 mt-2 text-base leading-relaxed">
-        {root.description}
-      </p>
-    )
-  }
-  <p class="font-ui text-muted-foreground mt-2 text-sm">
-    {meta.join(" · ")}
-  </p>
-
-  <div class="font-ui mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+  <div
+    class:list={[
+      "grid gap-5",
+      {
+        "sm:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] sm:items-center":
+          root.cover,
+      },
+    ]}
+  >
     {
-      root.start && (
-        <a
-          href={url(root.start)}
-          class="bg-accent text-accent-foreground inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 font-semibold hover:opacity-90"
-        >
-          {t.home.startHere}
-          <span class="sr-only">: {root.start.data.title}</span>
-          <span aria-hidden="true">→</span>
+      root.cover && (
+        <a href={pageUrl} tabindex="-1" aria-hidden="true" class="block">
+          <CollectionCover path={root.cover} {eager} />
         </a>
       )
     }
-    <a
-      href={pageUrl}
-      class="text-accent decoration-accent inline-flex min-h-11 items-center underline-offset-4 hover:underline"
-    >
-      {tplStr(t.home.seeAll, { count: root.count })}
-      <span aria-hidden="true">&nbsp;→</span>
-    </a>
+    <div>
+      <Heading
+        class="font-serif text-xl leading-snug font-semibold sm:text-2xl"
+      >
+        <a
+          href={pageUrl}
+          class="text-foreground hover:text-accent decoration-accent hover:underline hover:underline-offset-4"
+        >
+          {root.name}
+        </a>
+      </Heading>
+      {
+        root.description && (
+          <p class="text-foreground/85 mt-2 text-base leading-relaxed">
+            {root.description}
+          </p>
+        )
+      }
+      <p class="font-ui text-muted-foreground mt-2 text-sm">
+        {meta.join(" · ")}
+      </p>
+
+      <div class="font-ui mt-5 flex flex-wrap items-center gap-x-5 gap-y-3">
+        {
+          root.start && (
+            <a
+              href={url(root.start)}
+              class="bg-accent text-accent-foreground inline-flex min-h-11 items-center gap-1.5 rounded-lg px-4 font-semibold hover:opacity-90"
+            >
+              {t.home.startHere}
+              <span class="sr-only">: {root.start.data.title}</span>
+              <span aria-hidden="true">→</span>
+            </a>
+          )
+        }
+        <a
+          href={pageUrl}
+          class="text-accent decoration-accent inline-flex min-h-11 items-center underline-offset-4 hover:underline"
+        >
+          {tplStr(t.home.seeAll, { count: root.count })}
+          <span aria-hidden="true">&nbsp;→</span>
+        </a>
+      </div>
+    </div>
   </div>
 
   <div

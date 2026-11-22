@@ -2,22 +2,18 @@
 import { getCollection } from "astro:content";
 import { getRelativeLocaleUrl } from "astro:i18n";
 import IconRss from "@/assets/icons/IconRss.svg";
-import IconArrowRight from "@/assets/icons/IconArrowRight.svg";
 import Layout from "@/layouts/Layout.astro";
 import Header from "@/components/Header.astro";
 import Footer from "@/components/Footer.astro";
 import Socials from "@/components/Socials.astro";
 import Card from "@/components/Card.astro";
 import CollectionCard from "@/components/CollectionCard.astro";
-import LatestRow from "@/components/LatestRow.astro";
-import LinkButton from "@/components/LinkButton.astro";
 import { getSortedPosts } from "@/utils/getSortedPosts";
-import { collectionOf, getCollectionRoots } from "@/utils/getCollections";
+import { getCollectionRoots } from "@/utils/getCollections";
 import { useTranslations } from "@/i18n";
 import config from "@/config";
 
 const { socials } = config;
-const LATEST_COUNT = 5;
 
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
@@ -25,23 +21,6 @@ const t = useTranslations(locale);
 const posts = await getCollection("posts");
 const sortedPosts = getSortedPosts(posts);
 const featuredPosts = sortedPosts.filter(({ data }) => data.featured);
-// one entry per collection root, so a burst of series posts takes one slot
-type Entry = { post: (typeof sortedPosts)[number]; more: typeof sortedPosts };
-const entries = new Map<string, Entry>();
-for (const post of sortedPosts) {
-  const key = collectionOf(post)?.rootKey ?? `post:${post.id}`;
-  const entry = entries.get(key);
-  if (entry) {
-    // the part-0 "Start here" post leads its group when it is in the batch
-    if (post.data.part === 0) {
-      entry.more.unshift(entry.post);
-      entry.post = post;
-    } else entry.more.push(post);
-  } else if (entries.size < LATEST_COUNT) {
-    entries.set(key, { post, more: [] });
-  }
-}
-const latestPosts = [...entries.values()];
 const collections = getCollectionRoots(posts);
 const homePath = getRelativeLocaleUrl(locale, "");
 ---
@@ -76,8 +55,9 @@ const homePath = getRelativeLocaleUrl(locale, "");
       </a>
 
       <p class="text-foreground/85 max-w-[60ch] text-lg leading-relaxed">
-        What I learn while building and measuring LLM serving systems on GPUs:
-        the numbers, the limits of each measurement, and what went wrong.
+        What I learn while building systems: LLM serving, agents and system
+        design. The numbers, the limits of each measurement, and what went
+        wrong.
       </p>
       {
         socials.length > 0 && (
@@ -109,7 +89,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
         <section
           id="collections"
           aria-labelledby="collections-heading"
-          class="border-border border-b pt-12 pb-12"
+          class="pt-12 pb-12"
         >
           <h2
             id="collections-heading"
@@ -125,35 +105,6 @@ const homePath = getRelativeLocaleUrl(locale, "");
         </section>
       )
     }
-
-    {
-      latestPosts.length > 0 && (
-        <section
-          id="latest"
-          aria-labelledby="latest-heading"
-          class="pt-12 pb-6"
-        >
-          <h2 id="latest-heading" class="text-2xl font-semibold tracking-wide">
-            {t.home.latest}
-          </h2>
-          <ul class="mt-2">
-            {latestPosts.map(({ post, more }) => (
-              <LatestRow {post} {more} />
-            ))}
-          </ul>
-        </section>
-      )
-    }
-
-    <div class="my-8 text-center">
-      <LinkButton
-        href={getRelativeLocaleUrl(locale, "posts")}
-        class="max-sm:min-h-11"
-      >
-        {t.home.allPosts}
-        <IconArrowRight class="inline-block rtl:-rotate-180" />
-      </LinkButton>
-    </div>
   </main>
   <Footer />
 </Layout>
