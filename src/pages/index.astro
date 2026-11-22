@@ -33,11 +33,9 @@ const homePath = getRelativeLocaleUrl(locale, "");
     data-home-path={homePath}
     class="app-layout my-1"
   >
-    <section id="hero" class="border-border border-b pt-8 pb-8">
-      <h1
-        class="my-4 inline-block text-[2rem] leading-tight font-bold sm:mt-8 sm:mb-5 sm:text-5xl"
-      >
-        Hoang Phu: Lessons
+    <section id="hero" class="pt-8 pb-4">
+      <h1 class="page-title mt-4 mb-4 inline-block sm:mt-8">
+        Lessons from building systems
       </h1>
       <a
         target="_blank"
@@ -54,10 +52,11 @@ const homePath = getRelativeLocaleUrl(locale, "");
         <span class="sr-only">RSS Feed</span>
       </a>
 
-      <p class="text-foreground/85 max-w-[60ch] text-lg leading-relaxed">
-        What I learn while building systems: LLM serving, agents and system
-        design. The numbers, the limits of each measurement, and what went
-        wrong.
+      <p
+        class="text-muted-foreground max-w-[60ch] font-serif text-lg leading-relaxed italic"
+      >
+        LLM serving, agents and system design: the numbers, the limits of each
+        measurement, and what went wrong.
       </p>
       {
         socials.length > 0 && (
@@ -72,7 +71,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
     {
       featuredPosts.length > 0 && (
         <section id="featured" class="border-border border-b pt-12 pb-6">
-          <h2 class="text-2xl font-semibold tracking-wide">
+          <h2 class="section-label border-border border-b pb-2">
             {t.home.featured}
           </h2>
           <ul>
@@ -93,7 +92,7 @@ const homePath = getRelativeLocaleUrl(locale, "");
         >
           <h2
             id="collections-heading"
-            class="text-2xl font-semibold tracking-wide"
+            class="section-label border-border border-b pb-2"
           >
             {t.home.collections}
           </h2>

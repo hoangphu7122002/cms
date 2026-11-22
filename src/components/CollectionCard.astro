@@ -17,7 +17,6 @@ type Props = {
 const { root, eager = false, headingLevel: Heading = "h3" } = Astro.props;
 const locale = Astro.currentLocale ?? config.site.lang;
 const t = useTranslations(locale);
-const MAX_SHOWN = 3;
 
 const grouped = root.leaves.length > 1;
 const meta = [
@@ -31,11 +30,6 @@ const meta = [
 const pageUrl = getRelativeLocaleUrl(locale, `collections/${root.slug}`);
 const url = (p: CollectionEntry<"posts">) =>
   getPostUrl(p.id, p.filePath, locale);
-// the start post has its own button, so groups list the rest
-const groups = root.leaves.map(leaf => {
-  const posts = leaf.posts.filter(p => p.id !== root.start?.id);
-  return { leaf, shown: posts.slice(0, MAX_SHOWN), total: leaf.posts.length };
-});
 ---
 
 <li
@@ -101,47 +95,5 @@ const groups = root.leaves.map(leaf => {
         </a>
       </div>
     </div>
-  </div>
-
-  <div
-    class:list={[
-      "border-border mt-5 grid gap-x-8 gap-y-5 border-t pt-5",
-      { "sm:grid-cols-2": grouped },
-    ]}
-  >
-    {
-      groups.map(g => (
-        <div>
-          {grouped && (
-            <p class="font-ui text-muted-foreground text-sm font-semibold">
-              {g.leaf.name}
-              <span class="font-normal"> · {g.total}</span>
-            </p>
-          )}
-          <ol class="font-ui mt-2 space-y-2 text-base">
-            {g.shown.map(post => {
-              const n = g.leaf.posts.indexOf(post) + 1;
-              return (
-                <li class="flex items-baseline gap-2.5">
-                  <span
-                    aria-hidden="true"
-                    class="text-muted-foreground w-5 flex-none text-end text-sm tabular-nums"
-                  >
-                    {n}
-                  </span>
-                  <span class="sr-only">{tplStr(t.post.part, { n })}:</span>
-                  <a
-                    href={url(post)}
-                    class="text-foreground hover:text-accent decoration-muted-foreground/40 hover:decoration-accent leading-snug underline underline-offset-4 max-sm:inline-block max-sm:py-1"
-                  >
-                    {post.data.title}
-                  </a>
-                </li>
-              );
-            })}
-          </ol>
-        </div>
-      ))
-    }
   </div>
 </li>
