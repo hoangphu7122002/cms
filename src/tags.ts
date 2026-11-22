@@ -228,6 +228,7 @@ export const TAG_REGISTRY = {
     description:
       "Bounded contexts, layers and module boundaries in a codebase.",
     aliases: [
+      "hexagonal",
       "clean-architecture",
       "module-design",
       "modularity",
@@ -244,12 +245,40 @@ export const TAG_REGISTRY = {
     name: "Event-driven",
     group: "Architecture",
     description: "Services that talk through events and queues.",
+    aliases: ["outbox", "saga", "idempotency", "cqrs"],
   },
   serverless: {
     name: "Serverless",
     group: "Architecture",
     description: "Functions that run on demand, such as AWS Lambda.",
-    aliases: ["lambda"],
+    aliases: ["aws-lambda", "lambda"],
+  },
+  realtime: {
+    name: "Real-time",
+    group: "Architecture",
+    description:
+      "WebSockets, push notifications, sync across devices and WebRTC calls.",
+    aliases: [
+      "websocket",
+      "real-time",
+      "sync",
+      "push-notifications",
+      "webrtc",
+      "turn",
+      "sfu",
+    ],
+  },
+  security: {
+    name: "Security",
+    group: "Architecture",
+    description:
+      "Authentication, tokens, trust boundaries and least privilege.",
+  },
+  reliability: {
+    name: "Reliability",
+    group: "Architecture",
+    description: "High availability, backups and disaster recovery.",
+    aliases: ["high-availability", "disaster-recovery", "backups"],
   },
   // Stack
   vllm: {
@@ -300,6 +329,18 @@ export const TAG_REGISTRY = {
     name: "TypeScript",
     group: "Stack",
     description: "TypeScript on the server and the client.",
+  },
+  postgresql: {
+    name: "PostgreSQL",
+    group: "Stack",
+    description: "PostgreSQL, hosted on Supabase and Neon.",
+    aliases: ["postgres"],
+  },
+  mobile: {
+    name: "Client apps",
+    group: "Stack",
+    description: "Web, PWA, Android (Capacitor) and native macOS clients.",
+    aliases: ["capacitor", "swift", "pwa"],
   },
   // Other
   vietnamese: {
