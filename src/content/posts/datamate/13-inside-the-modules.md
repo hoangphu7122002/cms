@@ -10,7 +10,7 @@ draft: false
 tags: [datamate, architecture, codeact, table-qa, module-design, abstain]
 ---
 
-[Part 12](./12-whole-system-architecture.md) drew the whole system on one page. This part opens each box: what a
+[Part 12](/posts/datamate/12-whole-system-architecture/) drew the whole system on one page. This part opens each box: what a
 module is responsible for, what it reads and writes, its key parameters, how it fails, and one number that shows it
 matters. Limits and parameters come from the module READMEs and the resolved configuration of the submitted image;
 counts come from the traces of run n2 (1,000 public questions, PA 0.919). Public numbers are scored with my own labels
