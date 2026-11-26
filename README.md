@@ -2,10 +2,7 @@
 
 **Read approved lessons from several project repos on one static blog: series, concepts, field notes and methods.**
 
-[![CI](https://github.com/hoangphu7122002/cms/actions/workflows/ci.yml/badge.svg)](https://github.com/hoangphu7122002/cms/actions/workflows/ci.yml)
-[![Deploy](https://github.com/hoangphu7122002/cms/actions/workflows/deploy.yml/badge.svg)](https://github.com/hoangphu7122002/cms/actions/workflows/deploy.yml)
 [![Live site](https://img.shields.io/badge/live-blog.phufamily.com-2f6fde)](https://blog.phufamily.com/)
-[![Last commit](https://img.shields.io/github/last-commit/hoangphu7122002/cms)](https://github.com/hoangphu7122002/cms/commits/main)
 
 ## What and why
 
@@ -51,13 +48,9 @@ node scripts/sync.mjs --dry
 
 ## How it works
 
-```mermaid
-flowchart LR
-    A["Project repo<br/>docs/lessons/*.md<br/>status: approved"] -->|"node scripts/sync.mjs<br/>(manifest.json)"| B["src/content/posts/PROJECT/"]
-    B --> C["astro check + astro build<br/>+ pagefind"]
-    C --> D["dist/"]
-    D -->|"push to main"| E["GitHub Pages<br/>blog.phufamily.com"]
-```
+<p align="center"><img src="docs/assets/flow.png" alt="cms flow: approved lessons are synced from project repos into the Astro content folder, built with pagefind, and deployed to GitHub Pages." width="100%"></p>
+
+<sub>Drawn by docs/assets/make_figures.py (needs Google Chrome).</sub>
 
 Adding another project is one entry in `manifest.json`. Today it lists one source: `llm-serving-bench` (`../Triton/docs/lessons`).
 
